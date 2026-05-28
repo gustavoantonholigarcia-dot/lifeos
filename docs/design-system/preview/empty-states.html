@@ -1,0 +1,38 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .empty {
+    background: var(--elev-1);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 160px;
+    justify-content: center;
+  }
+  .empty .display {
+    font-family: var(--font-display);
+    font-style: italic; font-weight: 500;
+    font-size: 22px; line-height: 1.25; letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .empty .sub {
+    font-family: var(--font-body); font-size: 14px; color: var(--text-mute);
+    max-width: 30ch; line-height: 1.5;
+  }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Empty states · Spectral italic · sem emoji</div>
+  <div class="row">
+    <div class="empty">
+      <div class="display">Tudo limpo.</div>
+      <div class="sub">Nenhuma tarefa pendente. Toca no + pra criar a primeira.</div>
+    </div>
+    <div class="empty">
+      <div class="display">Sem treinos hoje.</div>
+      <div class="sub">Descanso é parte do plano. Amanhã: jiu-jitsu, 19h.</div>
+    </div>
+  </div>
+</div></body></html>

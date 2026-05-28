@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>LifeOS — Design v2 (warm)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /*
+    LifeOS — v2 "Warm Dark Editorial"
+    Conceito: "Diário manuscrito iluminado por uma lâmpada de mesa à noite"
+    Não preto puro — stone com toque sépia. Fraunces serif em momentos.
+  */
+  :root {
+    /* Surfaces — warm stone palette */
+    --bg: #1C1917;
+    --bg-elev: #292524;
+    --bg-elev-2: #3A332E;
+    --bg-elev-3: #44403C;
+    --line: rgba(245,241,237,0.08);
+    --line-strong: rgba(245,241,237,0.16);
+
+    /* Text — off-white morno (nunca #FFF) */
+    --text: #F5F1ED;
+    --text-2: rgba(245,241,237,0.65);
+    --text-3: rgba(245,241,237,0.42);
+    --text-4: rgba(245,241,237,0.28);
+
+    /* Warm accents */
+    --peach: #E8B4A0;
+    --sage: #A8B5A0;
+    --honey: #D4A574;
+    --cream: #F5E6D3;
+    --terracotta: #C97064;
+
+    /* Module identity (warm-shifted) */
+    --tawa: #6B8FB8;
+    --tawa-deep: #1B3654;
+    --tawa-halo: rgba(107,143,184,0.12);
+    --utfpr: #E8B96B;
+    --ruah: #9C8FE8;
+    --treinos: #87A878;
+    --projetos: #7BB5C2;
+    --intercambio: #D4A574;
+    --estudos: #B89FD9;
+
+    /* Priority (warm) */
+    --p-high: #C97064;
+    --p-med: #D4A574;
+    --p-low: #8FA8B8;
+    --p-none: #78716C;
+
+    /* Fonts */
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #14110f;
+    color: var(--text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* Page chrome */
+  .page {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .page-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 12px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+  .page-header h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 44px;
+    letter-spacing: -0.025em;
+  }
+  .page-header h1 em {
+    font-style: italic;
+    color: var(--peach);
+  }
+  .page-header .meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .page-sub {
+    color: var(--text-2);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 720px;
+    margin-bottom: 48px;
+  }
+
+  /* Phones row */
+  .phones {
+    display: flex;
+    gap: 40px;
+    overflow-x: auto;
+    padding: 16px 0 48px;
+    scroll-snap-type: x mandatory;
+  }
+  .phone-wrap {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .phone-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    padding-left: 4px;
+  }
+  .phone-label em {
+    color: var(--peach);
+    font-style: normal;
+  }
+  .phone {
+    width: 393px;
+    height: 852px;
+    border-radius: 56px;
+    background: var(--bg);
+    box-shadow:
+      0 0 0 10px #1a1a1a,
+      0 0 0 11px #2a2a2a,
+      0 60px 100px rgba(0,0,0,0.6),
+      0 20px 50px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Status bar */
+  .statusbar {
+    height: 54px;
+    padding: 18px 32px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .statusbar .icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text);
+  }
+  .statusbar .icons svg { width: 16px; height: 11px; }
+  .island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 122px;
+    height: 36px;
+    background: #000;
+    border-radius: 18px;
+  }
+
+  /* Tab bar (native iOS look) */
+  .tabbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px 28px;
+    background: linear-gradient(to top, var(--bg) 70%, transparent);
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+  }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    color: var(--text-3);
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .tab.active { color: var(--text); }
+  .tab.active .ico { color: var(--peach); }
+  .tab .ico {
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ========================================== */
+  /* SCREEN 1 — HOJE                            */
+  /* ========================================== */
+  .screen-hoje {
+    padding: 16px 22px 120px;
+    height: calc(100% - 54px);
+    overflow-y: auto;
+  }
+  .hoje-head {
+    margin: 12px 0 28px;
+  }
+  .hoje-head .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 10px;
+  }
+  .hoje-head .greeting {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 44px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .hoje-head .greeting em {
+    font-style: italic;
+    color: var(--peach);
+    font-weight: 400;
+  }
+  .hoje-head .date {
+    margin-top: 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hoje-head .date::before {
+    content: '';
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--peach);
+    box-shadow: 0 0 8px var(--peach);
+  }
+
+  /* Foco do dia */
+  .foco {
+    background:
+      radial-gradient(circle at 0% 0%, var(--tawa-halo), transparent 70%),
+      var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 22px 22px 18px;
+    margin-bottom: 32px;
+  }
+  .foco-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+  }
+  .foco-head .title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  .foco-head .count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.05em;
+  }
+  .foco-list { display: flex; flex-direction: column; }
+  .foco-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    align-items: flex-start;
+  }
+  .foco-item:first-child { border-top: none; padding-top: 4px; }
+  .foco-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+    padding-top: 2px;
+    min-width: 18px;
+  }
+  .foco-text {
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .foco-text .mod {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 6px;
+    vertical-align: 2px;
+  }
+  .mod-tawa { background: var(--tawa-halo); color: var(--tawa); }
+  .mod-utfpr { background: rgba(232,185,107,0.15); color: var(--utfpr); }
+  .mod-ruah { background: rgba(156,143,232,0.15); color: var(--ruah); }
+  .foco-prio {
+    width: 4px;
+    align-self: stretch;
+    border-radius: 2px;
+    background: var(--p-high);
+  }
+  .foco-prio.med { background: var(--p-med); }
+  .foco-prio.low { background: var(--p-low); }
+
+  /* Module cards */
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+  }
+  .section-head h3 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .section-head .all {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .modules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .mod-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 96px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mod-card .glow {
+    position: absolute;
+    top: -20px; right: -20px;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    opacity: 0.18;
+    filter: blur(20px);
+  }
+  .mod-card .name {
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mod-card .name::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .mod-card .num {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-top: 4px;
+  }
+  .mod-card .desc {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .mc-tawa { background: linear-gradient(135deg, var(--tawa-halo), transparent), var(--bg-elev); }
+  .mc-tawa .name::before, .mc-tawa .glow { background: var(--tawa); }
+  .mc-tawa .num { color: var(--tawa); }
+  .mc-utfpr .name::before, .mc-utfpr .glow { background: var(--utfpr); }
+  .mc-utfpr .num { color: var(--utfpr); }
+  .mc-ruah .name::before, .mc-ruah .glow { background: var(--ruah); }
+  .mc-ruah .num { color: var(--ruah); }
+  .mc-treinos .name::before, .mc-treinos .glow { background: var(--treinos); }
+  .mc-treinos .num { color: var(--treinos); }
+  .mc-estudos .name::before, .mc-estudos .glow { background: var(--estudos); }
+  .mc-estudos .num { color: var(--estudos); }
+  .mc-projetos .name::before, .mc-projetos .glow { background: var(--projetos); }
+  .mc-projetos .num { color: var(--projetos); }
+  .mc-intercambio .name::before, .mc-intercambio .glow { background: var(--intercambio); }
+  .mc-intercambio .num { color: var(--intercambio); }
+
+  /* ========================================== */
+  /* SCREEN 2 — TAWA                            */
+  /* ========================================== */
+  .screen-tawa {
+    padding: 16px 0 120px;
+    height: calc(100% - 54px);
+    overflow-y: auto;
+  }
+  .tawa-head {
+    padding: 8px 22px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .tawa-logo {
+    width: 52px; height: 52px;
+    background: var(--tawa-deep);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 12px rgba(27,54,84,0.3);
+  }
+  .tawa-logo svg { width: 28px; height: 28px; }
+  .tawa-head .text .small {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 4px;
+  }
+  .tawa-head .text .title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .tawa-head .text .sub {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-2);
+  }
+
+  .chips {
+    display: flex;
+    gap: 8px;
+    padding: 4px 22px 14px;
+    overflow-x: auto;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    white-space: nowrap;
+  }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--p-none); }
+  .chip.active {
+    background: var(--tawa-halo);
+    border-color: var(--tawa);
+    color: var(--text);
+  }
+  .chip.active .dot { background: var(--tawa); }
+  .chip[data-c="juridico"] .dot { background: var(--ruah); }
+  .chip[data-c="logistica"] .dot { background: var(--treinos); }
+
+  .status-seg {
+    margin: 0 22px 16px;
+    background: var(--bg-elev);
+    border-radius: 14px;
+    padding: 4px;
+    display: flex;
+    gap: 2px;
+    border: 1px solid var(--line);
+  }
+  .seg {
+    flex: 1;
+    padding: 10px 10px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .seg.active {
+    background: var(--bg-elev-3);
+    color: var(--text);
+  }
+  .seg .badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    background: rgba(245,241,237,0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    min-width: 18px;
+  }
+  .seg.active .badge {
+    background: var(--tawa-halo);
+    color: var(--tawa);
+  }
+
+  .tasks { padding: 4px 22px 0; display: flex; flex-direction: column; gap: 8px; }
+  .task {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 14px 14px 18px;
+    display: flex;
+    gap: 12px;
+    position: relative;
+  }
+  .task .prio-bar {
+    position: absolute;
+    left: 0; top: 12px; bottom: 12px;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+  }
+  .task.high .prio-bar { background: var(--p-high); }
+  .task.med .prio-bar { background: var(--p-med); }
+  .task.low .prio-bar { background: var(--p-low); }
+  .task .body { flex: 1; }
+  .task .title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .task .meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .task .meta .sector {
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .task .meta .sector::before {
+    content: '';
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--tawa);
+  }
+  .task .meta .due.today { color: var(--p-high); font-weight: 500; }
+  .task .meta .due.soon { color: var(--p-med); }
+  .task .meta .due { color: var(--text-2); font-family: var(--font-mono); }
+  .task .from {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .task .from .avatar {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--peach);
+    color: #2A1610;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fab {
+    position: absolute;
+    right: 22px; bottom: 110px;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--peach) 0%, var(--terracotta) 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 8px 24px rgba(232,180,160,0.35),
+      0 4px 8px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.3);
+    font-size: 28px;
+    font-weight: 300;
+  }
+
+  /* ========================================== */
+  /* SCREEN 3 — ESTUDOS (lista)                 */
+  /* ========================================== */
+  .screen-estudos {
+    padding: 16px 22px 120px;
+    height: calc(100% - 54px);
+    overflow-y: auto;
+  }
+  .estudos-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 8px 0 28px;
+  }
+  .estudos-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: rgba(184,159,217,0.18);
+    color: var(--estudos);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 24px;
+  }
+  .estudos-head .text .small {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 4px;
+  }
+  .estudos-head .text .title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .estudos-head .text .sub {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-2);
+  }
+
+  .idiomas { display: flex; flex-direction: column; gap: 12px; }
+  .idioma {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 0;
+    display: flex;
+    overflow: hidden;
+  }
+  .idioma .lateral { width: 4px; background: var(--estudos); }
+  .idioma .conteudo { flex: 1; padding: 16px; }
+  .idioma .topo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .idioma .bandeira {
+    font-size: 28px;
+    line-height: 1;
+  }
+  .idioma .nome {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .idioma .nivel {
+    font-size: 11px;
+    color: var(--text-2);
+    margin-top: 2px;
+  }
+  .idioma .stats {
+    display: flex;
+    gap: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stat .label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .stat .valor {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  /* Idioma cards — variantes de cor */
+  .idioma[data-c="ingles"] .lateral { background: var(--estudos); }
+  .idioma[data-c="espanhol"] .lateral { background: var(--honey); }
+  .idioma[data-c="frances"] .lateral { background: var(--peach); }
+
+  /* ========================================== */
+  /* SCREEN 4 — Form criar tarefa               */
+  /* ========================================== */
+  .screen-form {
+    padding: 0 0 120px;
+    height: calc(100% - 54px);
+    overflow-y: auto;
+  }
+  .form-head {
+    padding: 12px 22px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .form-head .cancel { color: var(--text-2); font-size: 15px; }
+  .form-head .title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 17px;
+  }
+  .form-head .save {
+    color: var(--peach);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .form-body { padding: 28px 22px 32px; display: flex; flex-direction: column; gap: 28px; }
+  .field-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .field-input {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--text);
+    line-height: 1.3;
+    padding: 0 0 14px;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    width: 100%;
+    outline: none;
+  }
+  .field-input::placeholder { color: var(--text-4); font-style: italic; }
+  .field-input:focus { border-bottom-color: var(--peach); }
+  .pill {
+    padding: 8px 13px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--p-none); }
+  .pill.active { color: var(--text); border-color: currentColor; }
+  .pill.p-high { color: var(--p-high); }
+  .pill.p-high .dot { background: var(--p-high); }
+  .pill.p-high.active { background: rgba(201,112,100,0.12); }
+  .pill.p-med .dot { background: var(--p-med); }
+  .pill.s-comercial.active { background: var(--tawa-halo); color: var(--tawa); border-color: var(--tawa); }
+  .pill.s-comercial .dot { background: var(--tawa); }
+  .field-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .field-prazo {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .field-prazo .when .day {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 18px;
+  }
+  .field-prazo .when .time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+  .field-prazo .icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--tawa-halo);
+    color: var(--tawa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .field-textarea {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 16px;
+    min-height: 100px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    width: 100%;
+    outline: none;
+    resize: none;
+    font-family: var(--font-sans);
+  }
+
+  /* Footer (annotations) */
+  .annotation {
+    margin-top: 28px;
+    padding-left: 16px;
+    border-left: 2px solid var(--peach);
+    color: var(--text-2);
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 760px;
+  }
+  .annotation em {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--text);
+  }
+  .annotation .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--peach);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+    color: var(--text-3);
+    font-size: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .footer h4 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--text-2);
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .footer ul { list-style: none; }
+  .footer li {
+    padding: 4px 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .footer li .v { color: var(--text-2); }
+  .swatch { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch::before {
+    content: '';
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    background: currentColor;
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(245,241,237,0.08);
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="page-header">
+    <h1>LifeOS <em>—</em> v2</h1>
+    <div class="meta">warm dark · 2026.05.27 · gustavo</div>
+  </div>
+  <p class="page-sub">
+    Refinamento da direção visual: dark mode com undertones quentes (stone), tipografia editorial em
+    momentos (Fraunces serif), squircles generosos (16-22px) e paleta orgânica (peach, sage, honey,
+    terracotta). Anchor: <em style="font-family:var(--font-display);font-style:italic;color:var(--text);">"um
+    diário manuscrito iluminado por uma lâmpada de mesa à noite"</em>.
+  </p>
+
+  <div class="phones">
+
+    <!-- SCREEN 1: HOJE -->
+    <div class="phone-wrap">
+      <div class="phone-label">01 <em>—</em> Hoje · Dashboard</div>
+      <div class="phone">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span>22:34</span>
+          <span class="icons">
+            <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 9h2v2H1zM5 7h2v4H5zM9 5h2v6H9zM13 3h2v8h-2z"/></svg>
+            <svg viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 4c4-3 10-3 14 0M3 6c3-2 7-2 10 0M5 8c2-1 4-1 6 0"/></svg>
+            <span style="opacity:.7;font-size:11px;">38%</span>
+          </span>
+        </div>
+
+        <div class="screen-hoje">
+          <div class="hoje-head">
+            <div class="label">Quarta · 27 de maio</div>
+            <h2 class="greeting">Boa noite,<br><em>Gustavo</em>.</h2>
+            <div class="date">3 prioridades · 2 prazos esta semana</div>
+          </div>
+
+          <div class="foco">
+            <div class="foco-head">
+              <div class="title">Foco do dia</div>
+              <div class="count">03 / 05</div>
+            </div>
+            <div class="foco-list">
+              <div class="foco-item">
+                <div class="foco-prio"></div>
+                <div class="foco-num">01</div>
+                <div class="foco-text"><span class="mod mod-tawa">TAWA</span>Revisar proposta XYZ — adesão Art. 86</div>
+              </div>
+              <div class="foco-item">
+                <div class="foco-prio med"></div>
+                <div class="foco-num">02</div>
+                <div class="foco-text"><span class="mod mod-utfpr">UTFPR</span>Entregar exercício Computação I</div>
+              </div>
+              <div class="foco-item">
+                <div class="foco-prio low"></div>
+                <div class="foco-num">03</div>
+                <div class="foco-text"><span class="mod mod-ruah">RUAH</span>Preparar reunião do ministério</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <h3>por área</h3>
+            <div class="all">07 módulos</div>
+          </div>
+          <div class="modules-grid">
+            <div class="mod-card mc-tawa">
+              <div class="glow"></div>
+              <div class="name">TAWA</div>
+              <div class="num">8</div>
+              <div class="desc">tarefas · Comercial</div>
+            </div>
+            <div class="mod-card mc-treinos">
+              <div class="glow"></div>
+              <div class="name">Treinos</div>
+              <div class="num">19h</div>
+              <div class="desc">Jiu-Jitsu hoje</div>
+            </div>
+            <div class="mod-card mc-utfpr">
+              <div class="glow"></div>
+              <div class="name">UTFPR</div>
+              <div class="num">2</div>
+              <div class="desc">trabalhos · prazo sexta</div>
+            </div>
+            <div class="mod-card mc-estudos">
+              <div class="glow"></div>
+              <div class="name">Estudos</div>
+              <div class="num">B1</div>
+              <div class="desc">inglês · 24h totais</div>
+            </div>
+            <div class="mod-card mc-ruah">
+              <div class="glow"></div>
+              <div class="name">RUAH</div>
+              <div class="num">21h</div>
+              <div class="desc">reunião hoje</div>
+            </div>
+            <div class="mod-card mc-projetos">
+              <div class="glow"></div>
+              <div class="name">Projetos</div>
+              <div class="num">3</div>
+              <div class="desc">em andamento</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabbar">
+          <div class="tab active">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 12L12 4l9 8v8a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1z"/></svg>
+            </div>
+            Hoje
+          </div>
+          <div class="tab">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            </div>
+            TAWA
+          </div>
+          <div class="tab">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 17l3-3 2 2 4-5 5 5"/><circle cx="8" cy="7" r="2"/></svg>
+            </div>
+            Treinos
+          </div>
+          <div class="tab">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+            </div>
+            Mais
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: TAWA -->
+    <div class="phone-wrap">
+      <div class="phone-label">02 <em>—</em> TAWA · Tarefas</div>
+      <div class="phone">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span>22:34</span>
+          <span class="icons">
+            <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 9h2v2H1zM5 7h2v4H5zM9 5h2v6H9zM13 3h2v8h-2z"/></svg>
+            <span style="opacity:.7;font-size:11px;">38%</span>
+          </span>
+        </div>
+
+        <div class="screen-tawa">
+          <div class="tawa-head">
+            <div class="tawa-logo">
+              <svg viewBox="0 0 32 32" fill="none">
+                <path d="M5 6h22v8c0 6-5 11-11 12-6-1-11-6-11-12V6z" stroke="white" stroke-width="1.5"/>
+                <path d="M10 11h12M14 11v9M22 11v9M22 17h-4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="text">
+              <div class="small">Trabalho · Tarefas</div>
+              <div class="title">TAWA</div>
+              <div class="sub">8 pendentes · 3 prazos esta semana</div>
+            </div>
+          </div>
+
+          <div class="chips">
+            <div class="chip active"><span class="dot"></span>Todos · 8</div>
+            <div class="chip" data-c="comercial"><span class="dot"></span>Comercial · 5</div>
+            <div class="chip" data-c="juridico"><span class="dot"></span>Jurídico · 2</div>
+            <div class="chip" data-c="logistica"><span class="dot"></span>Logística · 1</div>
+            <div class="chip"><span class="dot"></span>Admin</div>
+          </div>
+
+          <div class="status-seg">
+            <div class="seg active">A fazer<span class="badge">8</span></div>
+            <div class="seg">Em andamento<span class="badge">3</span></div>
+            <div class="seg">Feito<span class="badge">14</span></div>
+          </div>
+
+          <div class="tasks">
+            <div class="task high">
+              <div class="prio-bar"></div>
+              <div class="body">
+                <div class="title">Revisar proposta cliente XYZ — adesão Art. 86</div>
+                <div class="meta">
+                  <span class="sector">Comercial</span>
+                  <span>·</span>
+                  <span class="due today">Hoje · 18:00</span>
+                  <span>·</span>
+                  <span>📝</span>
+                </div>
+                <div class="from">
+                  <span class="avatar">P</span>
+                  Delegado por Pai
+                </div>
+              </div>
+            </div>
+
+            <div class="task med">
+              <div class="prio-bar"></div>
+              <div class="body">
+                <div class="title">Contrato Jurídico — revisão cláusula 4.2</div>
+                <div class="meta">
+                  <span class="sector" style="color:var(--ruah);">Jurídico</span>
+                  <span>·</span>
+                  <span class="due soon">Amanhã · 09:00</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="task med">
+              <div class="prio-bar"></div>
+              <div class="body">
+                <div class="title">Levantamento de preços — fornecedor BR</div>
+                <div class="meta">
+                  <span class="sector">Comercial</span>
+                  <span>·</span>
+                  <span class="due">Sem prazo</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="task low">
+              <div class="prio-bar"></div>
+              <div class="body">
+                <div class="title">Email follow-up Sec. Saúde Londrina</div>
+                <div class="meta">
+                  <span class="sector">Comercial</span>
+                  <span>·</span>
+                  <span class="due">Sex · 14:00</span>
+                </div>
+                <div class="from">
+                  <span class="avatar">M</span>
+                  Delegado por Michele
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fab">+</div>
+
+        <div class="tabbar">
+          <div class="tab"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L12 4l9 8v8a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1z"/></svg></div>Hoje</div>
+          <div class="tab active"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div>TAWA</div>
+          <div class="tab"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 17l3-3 2 2 4-5 5 5"/><circle cx="8" cy="7" r="2"/></svg></div>Treinos</div>
+          <div class="tab"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div>Mais</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: ESTUDOS -->
+    <div class="phone-wrap">
+      <div class="phone-label">03 <em>—</em> Estudos · Idiomas</div>
+      <div class="phone">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span>22:35</span>
+          <span class="icons">
+            <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 9h2v2H1zM5 7h2v4H5zM9 5h2v6H9zM13 3h2v8h-2z"/></svg>
+            <span style="opacity:.7;font-size:11px;">38%</span>
+          </span>
+        </div>
+
+        <div class="screen-estudos">
+          <div class="estudos-head">
+            <div class="estudos-icon">✦</div>
+            <div class="text">
+              <div class="small">Idiomas · Sessões · Certs</div>
+              <div class="title">Estudos</div>
+              <div class="sub">3 idiomas · 42h totais</div>
+            </div>
+          </div>
+
+          <div class="idiomas">
+            <div class="idioma" data-c="ingles">
+              <div class="lateral"></div>
+              <div class="conteudo">
+                <div class="topo">
+                  <div class="bandeira">🇬🇧</div>
+                  <div>
+                    <div class="nome">Inglês</div>
+                    <div class="nivel">B1 · Intermediário → C1</div>
+                  </div>
+                </div>
+                <div class="stats">
+                  <div class="stat"><span class="label">Tempo</span><span class="valor">24h 30m</span></div>
+                  <div class="stat"><span class="label">Dias</span><span class="valor">18</span></div>
+                  <div class="stat"><span class="label">Certs</span><span class="valor">2</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="idioma" data-c="espanhol">
+              <div class="lateral"></div>
+              <div class="conteudo">
+                <div class="topo">
+                  <div class="bandeira">🇪🇸</div>
+                  <div>
+                    <div class="nome">Espanhol</div>
+                    <div class="nivel">A2 · Pré-intermediário → B2</div>
+                  </div>
+                </div>
+                <div class="stats">
+                  <div class="stat"><span class="label">Tempo</span><span class="valor">12h</span></div>
+                  <div class="stat"><span class="label">Dias</span><span class="valor">9</span></div>
+                  <div class="stat"><span class="label">Última</span><span class="valor">25/05</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="idioma" data-c="frances">
+              <div class="lateral"></div>
+              <div class="conteudo">
+                <div class="topo">
+                  <div class="bandeira">🇫🇷</div>
+                  <div>
+                    <div class="nome">Francês</div>
+                    <div class="nivel">A1 · Básico</div>
+                  </div>
+                </div>
+                <div class="stats">
+                  <div class="stat"><span class="label">Tempo</span><span class="valor">5h 30m</span></div>
+                  <div class="stat"><span class="label">Dias</span><span class="valor">4</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fab" style="background:linear-gradient(135deg,var(--estudos),#7B5FB5);box-shadow:0 8px 24px rgba(184,159,217,0.35),0 4px 8px rgba(0,0,0,0.4);">+</div>
+
+        <div class="tabbar">
+          <div class="tab"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L12 4l9 8v8a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1z"/></svg></div>Hoje</div>
+          <div class="tab"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div>TAWA</div>
+          <div class="tab"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 17l3-3 2 2 4-5 5 5"/><circle cx="8" cy="7" r="2"/></svg></div>Treinos</div>
+          <div class="tab active"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div>Mais</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: FORM -->
+    <div class="phone-wrap">
+      <div class="phone-label">04 <em>—</em> Criar tarefa</div>
+      <div class="phone">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span>22:35</span>
+          <span class="icons">
+            <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 9h2v2H1zM5 7h2v4H5zM9 5h2v6H9zM13 3h2v8h-2z"/></svg>
+            <span style="opacity:.7;font-size:11px;">38%</span>
+          </span>
+        </div>
+
+        <div class="screen-form">
+          <div class="form-head">
+            <span class="cancel">Cancelar</span>
+            <span class="title">Nova <em>tarefa</em></span>
+            <span class="save">Criar</span>
+          </div>
+
+          <div class="form-body">
+            <div>
+              <label class="field-label">Título</label>
+              <input class="field-input" type="text" value="Revisar proposta cliente XYZ" placeholder="O que precisa ser feito?">
+            </div>
+            <div>
+              <label class="field-label">Setor</label>
+              <div class="field-row">
+                <div class="pill s-comercial active"><span class="dot"></span>Comercial</div>
+                <div class="pill"><span class="dot" style="background:var(--ruah);"></span>Jurídico</div>
+                <div class="pill"><span class="dot" style="background:var(--treinos);"></span>Logística</div>
+                <div class="pill"><span class="dot"></span>Admin</div>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Prioridade</label>
+              <div class="field-row">
+                <div class="pill p-high active"><span class="dot"></span>Alta</div>
+                <div class="pill p-med"><span class="dot"></span>Média</div>
+                <div class="pill"><span class="dot" style="background:var(--p-low);"></span>Baixa</div>
+                <div class="pill"><span class="dot"></span>Sem</div>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Prazo</label>
+              <div class="field-prazo">
+                <div class="when">
+                  <div class="day">Quarta, 27/05</div>
+                  <div class="time">18:00 · em 4h 24min</div>
+                </div>
+                <div class="icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                    <rect x="3" y="5" width="18" height="16" rx="2"/>
+                    <path d="M3 9h18M8 3v4M16 3v4"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Delegado por <span style="text-transform:none;letter-spacing:0;color:var(--text-4);font-family:var(--font-sans);font-style:italic;">(opcional)</span></label>
+              <input class="field-input" type="text" value="Pai" placeholder="Quem te passou?" style="font-size:18px;">
+            </div>
+            <div>
+              <label class="field-label">Observações</label>
+              <textarea class="field-textarea">Reunião com cliente foi positiva. Ajustar valor da seção 3 (15% acima do esperado). Anexar planilha antes de enviar.</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="annotation">
+    <span class="num">N. 01 — atmosfera warm</span>
+    Background <em>#1C1917</em> (stone-900, leve marrom) em vez de preto puro. Off-white
+    <em>#F5F1ED</em> em vez de branco. Cards com squircles de 16-22px (continuous corners, não os
+    8px corporativos do Linear).
+  </div>
+
+  <div class="annotation">
+    <span class="num">N. 02 — fraunces nos momentos</span>
+    Fraunces serif em saudações (<em>Boa noite, Gustavo</em>), títulos editoriais (<em>por área</em>,
+    <em>Foco do dia</em>) e número-destaque (24h 30m, B1). Inter para corpo, JetBrains Mono para
+    metadados.
+  </div>
+
+  <div class="annotation">
+    <span class="num">N. 03 — prioridades terracotta/honey</span>
+    Cor de prioridade alta agora é <em>#C97064</em> (terracotta), não vermelho fluo. Média é honey
+    <em>#D4A574</em>. Mais quente, menos urgente-clínico.
+  </div>
+
+  <div class="annotation">
+    <span class="num">N. 04 — fab com gradiente warm</span>
+    FAB azul corporativo virou gradiente peach→terracotta. Ainda chama atenção, mas com calor —
+    não parece botão de chatbot. Sombra colorida ecoando o acento.
+  </div>
+
+  <div class="annotation">
+    <span class="num">N. 05 — halação como identidade</span>
+    Cards do TAWA têm gradiente radial sutil (cor do módulo a 12% no canto superior esquerdo).
+    Identidade sem virar bloco colorido. Replica em Estudos (lavender), RUAH, etc.
+  </div>
+
+  <div class="footer">
+    <div>
+      <h4>Tipografia</h4>
+      <ul>
+        <li><span>Display</span><span class="v">Fraunces · 300-500</span></li>
+        <li><span>Sans</span><span class="v">Inter · 400-600</span></li>
+        <li><span>Mono</span><span class="v">JetBrains Mono · 400</span></li>
+        <li><span>Saudação</span><span class="v">44px display</span></li>
+        <li><span>Título seção</span><span class="v">32px display</span></li>
+        <li><span>Body</span><span class="v">14/15 sans</span></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Surfaces · warm</h4>
+      <ul>
+        <li><span class="swatch" style="color:#1C1917">bg</span><span class="v">#1C1917 stone</span></li>
+        <li><span class="swatch" style="color:#292524">elev-1</span><span class="v">#292524</span></li>
+        <li><span class="swatch" style="color:#3A332E">elev-2</span><span class="v">#3A332E</span></li>
+        <li><span class="swatch" style="color:#F5F1ED">text</span><span class="v">#F5F1ED off-white</span></li>
+        <li><span>line</span><span class="v">F5F1ED / 8%</span></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Acentos warm</h4>
+      <ul>
+        <li><span class="swatch" style="color:#E8B4A0">peach</span><span class="v">#E8B4A0</span></li>
+        <li><span class="swatch" style="color:#A8B5A0">sage</span><span class="v">#A8B5A0</span></li>
+        <li><span class="swatch" style="color:#D4A574">honey</span><span class="v">#D4A574</span></li>
+        <li><span class="swatch" style="color:#C97064">terracotta</span><span class="v">#C97064</span></li>
+        <li><span class="swatch" style="color:#B89FD9">dusty lavender</span><span class="v">#B89FD9</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

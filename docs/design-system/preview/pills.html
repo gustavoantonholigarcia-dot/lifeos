@@ -1,0 +1,43 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .pillrow { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: var(--r-full);
+    padding: 8px 14px;
+    font-family: var(--font-body); font-weight: 500; font-size: 13px;
+    background: var(--elev-1); color: var(--text-mute);
+    border: 1px solid transparent;
+    transition: transform 180ms var(--ease);
+  }
+  .pill.on {
+    background: color-mix(in oklab, var(--c) 22%, transparent);
+    color: var(--c);
+  }
+  .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.8; }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+  .row { display: flex; flex-direction: column; gap: 10px; }
+  .sublabel { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
+</style></head>
+<body><div class="card">
+  <div class="legend">Pills · filtros horizontais scrolláveis</div>
+  <div class="row">
+    <div class="sublabel">estado on (cor do módulo · 22% fill)</div>
+    <div class="pillrow">
+      <span class="pill on" style="--c:#6B8FB8;">TAWA</span>
+      <span class="pill on" style="--c:#E8B96B;">UTFPR</span>
+      <span class="pill on" style="--c:#87A878;">Treinos</span>
+      <span class="pill on" style="--c:#F2E7D2;">RUAH</span>
+    </div>
+    <div class="sublabel">estado off</div>
+    <div class="pillrow">
+      <span class="pill">Todos</span>
+      <span class="pill">Hoje</span>
+      <span class="pill">Esta semana</span>
+      <span class="pill">Backlog</span>
+      <span class="pill">Concluídos</span>
+    </div>
+  </div>
+</div></body></html>

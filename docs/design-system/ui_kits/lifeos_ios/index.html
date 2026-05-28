@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>LifeOS — UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #14110F; min-height: 100vh; }
+  body {
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    color: #F5F1ED;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 56px 24px 80px;
+    gap: 32px;
+  }
+  /* warm vignette behind phone */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(60% 50% at 50% 20%, rgba(232,180,160,0.06) 0%, transparent 70%),
+      radial-gradient(80% 60% at 50% 100%, rgba(212,165,116,0.04) 0%, transparent 70%);
+  }
+  .header {
+    z-index: 1;
+    display: flex; flex-direction: column; gap: 14px; align-items: center;
+    text-align: center; max-width: 520px;
+  }
+  .header .display {
+    font-family: 'Spectral', Georgia, serif;
+    font-style: italic; font-weight: 500;
+    font-size: 28px; letter-spacing: -0.02em; line-height: 1.25;
+  }
+  .header .meta {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(245,241,237,0.55);
+  }
+  .header .sub {
+    font-size: 14px; color: rgba(245,241,237,0.62); line-height: 1.5;
+  }
+  .stage { z-index: 1; display: flex; align-items: flex-start; gap: 28px; flex-wrap: wrap; justify-content: center; }
+  .side {
+    width: 220px; display: flex; flex-direction: column; gap: 14px;
+    padding-top: 24px;
+  }
+  .side .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(245,241,237,0.45); margin-bottom: 4px;
+  }
+  .side button {
+    background: rgba(245,241,237,0.04);
+    border: 1px solid rgba(245,241,237,0.08);
+    color: #F5F1ED;
+    border-radius: 14px;
+    padding: 12px 14px;
+    text-align: left;
+    font-family: 'Inter', sans-serif; font-size: 13px;
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(.2,.8,.2,1);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .side button:hover { background: rgba(245,241,237,0.08); }
+  .side button.active {
+    background: rgba(232,180,160,0.10);
+    border-color: rgba(232,180,160,0.30);
+    color: #E8B4A0;
+  }
+  .side button .k {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: rgba(245,241,237,0.4); letter-spacing: 0.04em;
+  }
+  .side .hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; line-height: 1.6;
+    color: rgba(245,241,237,0.40);
+    padding: 12px 4px 0;
+    border-top: 1px solid rgba(245,241,237,0.06);
+    margin-top: 8px;
+  }
+  #root { display: contents; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="meta">LifeOS · UI Kit · iOS</div>
+  <div class="display">Diário-aplicativo. Dark e warm.</div>
+  <div class="sub">Recreação click-thru das telas principais. Clica nos cards de módulo, no FAB pra criar uma tarefa, ou usa o menu lateral pra navegar.</div>
+</div>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="tokens.js"></script>
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="Atoms.jsx"></script>
+<script type="text/babel" src="TaskRow.jsx"></script>
+<script type="text/babel" src="ModuleCard.jsx"></script>
+<script type="text/babel" src="TabBar.jsx"></script>
+<script type="text/babel" src="Screens.jsx"></script>
+<script type="text/babel" src="MoreScreens.jsx"></script>
+
+<script type="text/babel">
+const INITIAL_TASKS = [
+  { id: 1, title: 'Revisar orçamento da carreta',     module: 'tawa',    time: '14:30', priority: 'alta',  done: false },
+  { id: 2, title: 'Ligar pro cliente do bombeiro',    module: 'tawa',    time: '16:00', priority: 'media', done: false },
+  { id: 3, title: 'Entregar relatório Cálculo 3',     module: 'utfpr',   time: 'sex',   priority: 'media', done: false, tag: 'cálculo' },
+  { id: 4, title: 'Estudar subjuntivo presente',      module: 'estudos', time: '21:00', priority: 'baixa', done: false, tag: 'espanhol' },
+  { id: 5, title: 'Confirmar treino de jiu-jitsu',    module: 'treinos', time: '19:00', priority: 'baixa', done: false },
+  { id: 6, title: 'Ler João 3',                       module: 'ruah',    time: 'noite', priority: null,    done: false },
+  { id: 7, title: 'Treino de tênis · 1h',             module: 'treinos', time: 'concluído', done: true },
+  { id: 8, title: 'Anotar reunião com fornecedor',    module: 'tawa',    time: 'concluído', done: true },
+];
+
+function App() {
+  const [tab, setTab]         = React.useState('home');
+  const [tasks, setTasks]     = React.useState(INITIAL_TASKS);
+  const [filter, setFilter]   = React.useState('todos');
+  const [moduleView, setModuleView] = React.useState(null);     // a module id when drilled in
+  const [subView, setSubView]   = React.useState(null);         // 'utfpr-subjects' | null
+  const [novaOpen, setNovaOpen]     = React.useState(false);
+  const [novaModule, setNovaModule] = React.useState(null);
+  const [onboarding, setOnboarding] = React.useState(false);
+  const [settings, setSettings]     = React.useState(false);
+
+  const onToggle = (t) => setTasks(prev => prev.map(x => x.id === t.id ? { ...x, done: !x.done } : x));
+  const onCreate = (data) => setTasks(prev => [{ id: Date.now(), ...data, done: false }, ...prev]);
+
+  // pick screen based on tab + module drill-in
+  let screen;
+  if (onboarding) {
+    screen = <OnboardingScreen onFinish={() => setOnboarding(false)} />;
+  } else if (settings) {
+    screen = <SettingsScreen />;
+  } else if (subView === 'utfpr-subjects') {
+    screen = <UtfprSubjectsScreen onBack={() => { setSubView(null); setModuleView('utfpr'); }} />;
+  } else if (tab === 'home' && moduleView) {
+    screen = <ModuleScreen
+              moduleId={moduleView}
+              tasks={tasks}
+              onToggle={onToggle}
+              onBack={() => setModuleView(null)}
+              onSubView={(sv) => setSubView(sv)} />;
+  } else if (tab === 'home') {
+    screen = <HomeScreen
+              tasks={tasks}
+              onToggle={onToggle}
+              onModule={(id) => setModuleView(id)}
+              filter={filter}
+              setFilter={setFilter} />;
+  } else if (tab === 'modules') {
+    screen = <TreinosScreen />;
+  } else if (tab === 'week') {
+    screen = <TreinosScreen />;
+  } else if (tab === 'diary') {
+    screen = <DiarioScreen />;
+  } else {
+    screen = <EuScreen onSettings={() => setSettings(true)} />;
+  }
+
+  const items = [
+    { id: 'home',        label: 'Hoje',           k: 'inicial' },
+    { id: 'home-tawa',   label: 'Módulo TAWA',    k: 'detail' },
+    { id: 'utfpr-subs',  label: 'UTFPR · Matérias', k: 'sub-view' },
+    { id: 'nova',        label: 'Nova tarefa',    k: 'sheet' },
+    { id: 'week',        label: 'Treinos',        k: 'lista' },
+    { id: 'diary',       label: 'Diário',         k: 'editor' },
+    { id: 'settings',    label: 'Ajustes',        k: 'settings' },
+    { id: 'onboarding',  label: 'Onboarding',     k: '3-passos' },
+  ];
+
+  const goItem = (id) => {
+    setModuleView(null); setSubView(null);
+    setOnboarding(false); setSettings(false);
+    if (id !== 'nova') setNovaOpen(false);
+    if (id === 'home')           { setTab('home'); }
+    else if (id === 'home-tawa') { setTab('home'); setModuleView('tawa'); }
+    else if (id === 'utfpr-subs'){ setTab('home'); setSubView('utfpr-subjects'); }
+    else if (id === 'nova')      { setTab('home'); setNovaModule(null); setNovaOpen(true); }
+    else if (id === 'week')      { setTab('week'); }
+    else if (id === 'diary')     { setTab('diary'); }
+    else if (id === 'settings')  { setSettings(true); }
+    else if (id === 'onboarding'){ setOnboarding(true); }
+  };
+
+  const activeNav = onboarding ? 'onboarding'
+                   : settings ? 'settings'
+                   : subView === 'utfpr-subjects' ? 'utfpr-subs'
+                   : novaOpen ? 'nova'
+                   : moduleView ? 'home-tawa'
+                   : tab === 'home' ? 'home'
+                   : tab === 'week' ? 'week'
+                   : tab === 'diary' ? 'diary' : 'home';
+
+  return (
+    <div className="stage">
+      {/* Left rail — screen picker */}
+      <div className="side">
+        <div className="label">Telas</div>
+        {items.map(it => (
+          <button key={it.id} className={activeNav === it.id ? 'active' : ''} onClick={() => goItem(it.id)}>
+            <span>{it.label}</span>
+            <span className="k">{it.k}</span>
+          </button>
+        ))}
+        <div className="hint">
+          ↪ tap nos cards de módulo<br/>
+          ↪ tap no <b>+</b> abre a sheet<br/>
+          ↪ tap nos checks marca a tarefa<br/>
+          ↪ filtros são pills horizontais
+        </div>
+      </div>
+
+      {/* iPhone */}
+      <IOSDevice width={402} height={874} dark={true}>
+        <div style={{ position: 'absolute', inset: 0, background: '#1C1917', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', inset: 0, overflow: 'auto', paddingTop: 50 }}>
+            {screen}
+          </div>
+          {!onboarding && !settings && (
+            <FAB onClick={() => { setNovaModule(moduleView); setNovaOpen(true); }} />
+          )}
+          <NovaTarefaSheet
+            open={novaOpen}
+            onClose={() => setNovaOpen(false)}
+            defaultModule={novaModule}
+            onCreate={onCreate}
+          />
+          {!onboarding && (
+            <TabBar active={tab} onChange={(t) => { setModuleView(null); setSubView(null); setSettings(false); setTab(t); if (t === 'me') setSettings(false); }} />
+          )}
+        </div>
+      </IOSDevice>
+
+      {/* Right rail — token snapshot */}
+      <div className="side">
+        <div className="label">Tokens</div>
+        <div style={{
+          background: 'rgba(245,241,237,0.03)',
+          border: '1px solid rgba(245,241,237,0.08)',
+          borderRadius: 14, padding: 12,
+          fontFamily: "'JetBrains Mono', monospace", fontSize: 10,
+          color: 'rgba(245,241,237,0.7)', lineHeight: 1.7,
+        }}>
+          bg #1C1917<br/>
+          elev-1 #292524<br/>
+          elev-2 #3A332E<br/>
+          text #F5F1ED<br/>
+          ───<br/>
+          peach #E8B4A0<br/>
+          honey #D4A574<br/>
+          sage #A8B5A0<br/>
+          terracotta #C97064
+        </div>
+        <div className="label" style={{ marginTop: 10 }}>Módulos</div>
+        <div style={{
+          background: 'rgba(245,241,237,0.03)',
+          border: '1px solid rgba(245,241,237,0.08)',
+          borderRadius: 14, padding: 12,
+          display: 'flex', flexDirection: 'column', gap: 6,
+        }}>
+          {Object.entries(MODULES).map(([k, m]) => (
+            <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'rgba(245,241,237,0.7)' }}>
+              <span style={{ width: 8, height: 8, borderRadius: 99, background: m.color }} />
+              <span style={{ flex: 1, fontFamily: "'Inter', sans-serif", color: '#F5F1ED' }}>{m.name}</span>
+              <span>{m.color}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// minimal "Eu" screen
+function EuScreen({ onSettings }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, paddingBottom: 140, paddingTop: 28 }}>
+      <div>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(245,241,237,0.62)', padding: '0 20px 4px' }}>perfil</div>
+        <div style={{ fontFamily: "'Spectral', serif", fontStyle: 'italic', fontWeight: 500, fontSize: 32, letterSpacing: '-0.02em', color: '#F5F1ED', padding: '0 20px' }}>Gustavo.</div>
+      </div>
+      <div style={{ margin: '0 16px', background: '#292524', borderRadius: 22, padding: 18, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: 'rgba(245,241,237,0.62)' }}>Esta semana</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {[['18','tarefas'],['3','treinos'],['7','dias'],['2','entradas']].map(([n,l]) => (
+            <div key={l} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+              <div style={{ fontFamily: "'Spectral', serif", fontStyle: 'italic', fontWeight: 500, fontSize: 28, color: '#F5F1ED' }}>{n}</div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'rgba(245,241,237,0.62)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ margin: '0 16px', background: '#292524', borderRadius: 22, overflow: 'hidden' }}>
+        {[['Aparência', null], ['Notificações', null], ['Atalhos', null], ['Sincronização', null], ['Ajustes detalhados', onSettings]].map(([row, fn], i, a) => (
+          <div key={row} onClick={fn || undefined} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderBottom: i === a.length-1 ? 'none' : '1px solid rgba(245,241,237,0.08)', cursor: fn ? 'pointer' : 'default' }}>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, color: '#F5F1ED' }}>{row}</span>
+            <span style={{ color: 'rgba(245,241,237,0.40)' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { EuScreen });
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+</body>
+</html>

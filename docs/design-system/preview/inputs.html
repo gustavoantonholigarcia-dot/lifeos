@@ -1,0 +1,42 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .input {
+    background: var(--elev-1);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: var(--font-body); font-size: 15px;
+    transition: border-color 180ms var(--ease);
+  }
+  .input.focus { border-color: var(--mod-tawa); }
+  .label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .help  { font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); margin-top: 6px; letter-spacing: 0.04em; }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+  .field { display: flex; flex-direction: column; }
+</style></head>
+<body><div class="card">
+  <div class="legend">Inputs · borda sutil · focus = cor do módulo</div>
+  <div class="row">
+    <div class="field">
+      <div class="label">Título</div>
+      <div class="input">Revisar orçamento da carreta</div>
+    </div>
+    <div class="field">
+      <div class="label">Módulo (focus)</div>
+      <div class="input focus">TAWA</div>
+      <div class="help">borda → cor do módulo selecionado</div>
+    </div>
+    <div class="field">
+      <div class="label">Empty / placeholder</div>
+      <div class="input" style="color: var(--text-dim);">O que precisa ser feito?</div>
+    </div>
+    <div class="field">
+      <div class="label">Mono · horário</div>
+      <div class="input" style="font-family: var(--font-mono); font-size: 15px;">14:30 · qui · 28 mai</div>
+    </div>
+  </div>
+</div></body></html>

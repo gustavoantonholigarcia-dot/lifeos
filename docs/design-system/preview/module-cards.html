@@ -1,0 +1,61 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .mod-card {
+    --c: #6B8FB8;
+    position: relative; overflow: hidden;
+    border-radius: var(--r-lg);
+    background: var(--elev-1);
+    padding: 18px;
+    height: 160px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .mod-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(120% 80% at 100% 0%, var(--c) 18%, transparent 60%);
+    opacity: 1; pointer-events: none;
+  }
+  .mod-card .wm {
+    position: absolute; right: -10px; top: -8px;
+    width: 138px; height: 138px;
+    opacity: 0.48; pointer-events: none;
+    object-fit: contain;
+  }
+  .mod-card > .content { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 4px; }
+  .mod-head { display: flex; align-items: center; gap: 10px; }
+  .mod-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+  .mod-name { font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 22px; letter-spacing: -0.02em; }
+  .mod-count { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); letter-spacing: 0.04em; position: relative; z-index: 1; }
+  .mod-foot { display: flex; gap: 8px; position: relative; z-index: 1; }
+  .chip {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em;
+    padding: 4px 8px; border-radius: var(--r-sm);
+    background: color-mix(in oklab, var(--c) 22%, transparent);
+    color: var(--c);
+  }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Cards de identidade · halação + logo watermark</div>
+  <div class="grid">
+    <div class="mod-card" style="--c:#6B8FB8;">
+      <img class="wm" src="../assets/logos/tawa-shield.png" alt="">
+      <div class="content">
+        <div class="mod-head"><span class="mod-dot"></span><span class="mod-name">TAWA</span></div>
+      </div>
+      <div class="mod-count">7 abertas · 3 hoje</div>
+      <div class="mod-foot"><span class="chip">orçamento</span><span class="chip">cliente</span></div>
+    </div>
+    <div class="mod-card" style="--c:#F2E7D2;">
+      <img class="wm" src="../assets/logos/ruah-mark.png" alt="">
+      <div class="content">
+        <div class="mod-head"><span class="mod-dot"></span><span class="mod-name">RUAH</span></div>
+      </div>
+      <div class="mod-count">2 abertas</div>
+      <div class="mod-foot"><span class="chip">leitura</span><span class="chip">encontro</span></div>
+    </div>
+  </div>
+</div></body></html>

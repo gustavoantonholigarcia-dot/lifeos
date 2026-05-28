@@ -1,0 +1,39 @@
+<!-- @dsCard group="Brand" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .anchor {
+    display: flex; gap: 24px; align-items: stretch;
+  }
+  .mood {
+    width: 200px; height: 200px; flex-shrink: 0;
+    border-radius: var(--r-xl);
+    background: radial-gradient(80% 60% at 35% 30%, #E8B4A0 0%, transparent 55%),
+                radial-gradient(60% 60% at 70% 80%, #D4A574 0%, transparent 60%),
+                #1C1917;
+  }
+  .copy { display: flex; flex-direction: column; gap: 10px; justify-content: center; max-width: 360px; }
+  .copy .display {
+    font-family: var(--font-display); font-style: italic; font-weight: 500;
+    font-size: 22px; line-height: 1.25; letter-spacing: -0.02em;
+  }
+  .copy p { font-family: var(--font-body); font-size: 13px; color: var(--text-mute); line-height: 1.5; margin: 0; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em;
+    padding: 4px 8px; border-radius: var(--r-sm);
+    background: rgba(245,241,237,0.06); color: var(--text-mute); }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Anchor visual · lâmpada de mesa à noite</div>
+  <div class="anchor">
+    <div class="mood"></div>
+    <div class="copy">
+      <div class="display">Diário manuscrito iluminado por uma lâmpada de mesa à noite.</div>
+      <p>Stone-900 + halação warm. Off-white pergaminho. Spectral italic nos momentos editoriais. Tudo é warm-shifted; preto puro e branco puro não existem aqui.</p>
+      <div class="tags">
+        <span class="tag">things-3</span><span class="tag">day-one</span><span class="tag">stoic</span><span class="tag">hevy</span><span class="tag">linear (precisão)</span>
+      </div>
+    </div>
+  </div>
+</div></body></html>

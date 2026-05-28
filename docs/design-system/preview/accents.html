@@ -1,0 +1,27 @@
+<!-- @dsCard group="Colors" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .sw {
+    border-radius: var(--r-md);
+    height: 132px;
+    padding: 14px;
+    background: var(--elev-1);
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .chip { width: 100%; height: 56px; border-radius: var(--r-sm); }
+  .name { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--text); }
+  .hex  { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); letter-spacing: 0.04em; }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Acentos warm · "lâmpada de mesa"</div>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#E8B4A0"></div><div><div class="name">peach</div><div class="hex">#E8B4A0</div></div></div>
+    <div class="sw"><div class="chip" style="background:#A8B5A0"></div><div><div class="name">sage</div><div class="hex">#A8B5A0</div></div></div>
+    <div class="sw"><div class="chip" style="background:#D4A574"></div><div><div class="name">honey</div><div class="hex">#D4A574</div></div></div>
+    <div class="sw"><div class="chip" style="background:#C97064"></div><div><div class="name">terracotta</div><div class="hex">#C97064</div></div></div>
+    <div class="sw"><div class="chip" style="background:#B89FD9"></div><div><div class="name">lavender</div><div class="hex">#B89FD9</div></div></div>
+  </div>
+</div></body></html>

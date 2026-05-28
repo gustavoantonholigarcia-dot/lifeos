@@ -1,0 +1,63 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .list { background: var(--elev-1); border-radius: var(--r-lg); overflow: hidden; }
+  .task {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .task:last-child { border-bottom: none; }
+  .check {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid rgba(245,241,237,0.30);
+    flex-shrink: 0;
+  }
+  .check.done { background: var(--sage); border-color: var(--sage); }
+  .check.done::after { content: ""; display: block; width: 7px; height: 4px; border-left: 1.5px solid #1C1917; border-bottom: 1.5px solid #1C1917; transform: rotate(-45deg); margin: 6px 0 0 5px; }
+  .body { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .title { font-family: var(--font-body); font-size: 15px; color: var(--text); }
+  .title.done { color: var(--text-dim); text-decoration: line-through; }
+  .meta { display: flex; gap: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); letter-spacing: 0.02em; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .prio { padding: 3px 8px; border-radius: var(--r-sm); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Task row · check + título + meta + cor do módulo</div>
+  <div class="list">
+    <div class="task">
+      <div class="check"></div>
+      <div class="body">
+        <div class="title">Revisar orçamento da carreta</div>
+        <div class="meta">
+          <span class="dot" style="background:#6B8FB8;"></span>
+          <span>TAWA</span><span>·</span><span>14:30</span>
+        </div>
+      </div>
+      <span class="prio" style="background: color-mix(in oklab, #C97064 22%, transparent); color:#C97064;">alta</span>
+    </div>
+    <div class="task">
+      <div class="check"></div>
+      <div class="body">
+        <div class="title">Entregar relatório Cálculo 3</div>
+        <div class="meta">
+          <span class="dot" style="background:#E8B96B;"></span>
+          <span>UTFPR</span><span>·</span><span>sex · 30 mai</span>
+        </div>
+      </div>
+      <span class="prio" style="background: color-mix(in oklab, #D4A574 22%, transparent); color:#D4A574;">média</span>
+    </div>
+    <div class="task">
+      <div class="check done"></div>
+      <div class="body">
+        <div class="title done">Treino de tênis · 1h</div>
+        <div class="meta">
+          <span class="dot" style="background:#87A878;"></span>
+          <span>Treinos</span><span>·</span><span>concluído</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></body></html>

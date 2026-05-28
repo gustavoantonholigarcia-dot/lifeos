@@ -1,0 +1,64 @@
+<!-- @dsCard group="Colors" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .swatches { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .prio {
+    background: var(--elev-1);
+    border-radius: var(--r-md);
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 16px;
+    height: 168px; justify-content: space-between;
+    position: relative; overflow: hidden;
+  }
+  .prio::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(120% 80% at 100% 0%, var(--c) 14%, transparent 60%);
+    pointer-events: none;
+  }
+  .swatch {
+    position: relative;
+    width: 100%; height: 36px; border-radius: var(--r-sm);
+    background: var(--c);
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: color-mix(in oklab, var(--c) 22%, transparent);
+    color: var(--c);
+    font-family: var(--font-body); font-weight: 500; font-size: 13px;
+    padding: 6px 14px; border-radius: var(--r-full);
+    width: max-content; position: relative;
+  }
+  .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+  .meta { position: relative; display: flex; flex-direction: column; gap: 2px; }
+  .name { font-family: var(--font-body); font-weight: 600; font-size: 14px; color: var(--text); }
+  .hex  { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); letter-spacing: 0.04em; }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+  .note { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+</style></head>
+<body><div class="card">
+  <div class="legend">Prioridades · vermelho vivo como âncora</div>
+  <div class="swatches">
+    <div class="prio" style="--c:#E04830">
+      <div class="swatch"></div>
+      <div class="pill">alta</div>
+      <div class="meta"><div class="name">Vermilion</div><div class="hex">#E04830</div></div>
+    </div>
+    <div class="prio" style="--c:#E8A845">
+      <div class="swatch"></div>
+      <div class="pill">média</div>
+      <div class="meta"><div class="name">Amber</div><div class="hex">#E8A845</div></div>
+    </div>
+    <div class="prio" style="--c:#8FA899">
+      <div class="swatch"></div>
+      <div class="pill">baixa</div>
+      <div class="meta"><div class="name">Sage</div><div class="hex">#8FA899</div></div>
+    </div>
+  </div>
+  <div class="note">
+    <b style="color:#E04830">Vermilion</b> · vermelho vivo com leve undertone laranja — alto contraste sem virar fluo SaaS.<br/>
+    <b style="color:#E8A845">Amber</b> · âmbar saturado, claramente distinto do amarelo UTFPR (mais laranja).<br/>
+    <b style="color:#8FA899">Sage</b> · verde-warm baixa-saturação — comunica "calmo / pode esperar" sem quebrar o tom warm.<br/>
+    Aplicado globalmente: tokens, UI kit, task rows, sheet "Nova tarefa".
+  </div>
+</div></body></html>

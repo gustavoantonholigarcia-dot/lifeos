@@ -1,0 +1,42 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    display: inline-flex; align-items: center;
+    border-radius: var(--r-sm);
+    padding: 4px 10px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em;
+    background: color-mix(in oklab, var(--c) 22%, transparent);
+    color: var(--c);
+  }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+  .sublabel { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
+</style></head>
+<body><div class="card">
+  <div class="legend">Tags · pastel fill (cor + 22% alpha)</div>
+
+  <div class="sublabel">Tags de módulo</div>
+  <div class="tags">
+    <span class="tag" style="--c:#6B8FB8;">#orçamento</span>
+    <span class="tag" style="--c:#E8B96B;">#cálculo-3</span>
+    <span class="tag" style="--c:#87A878;">#jiu-jitsu</span>
+    <span class="tag" style="--c:#F2E7D2;">#leitura</span>
+    <span class="tag" style="--c:#7BB5C2;">#side-project</span>
+  </div>
+
+  <div class="sublabel" style="margin-top:6px;">Tags de prioridade</div>
+  <div class="tags">
+    <span class="tag" style="--c:#C97064;">alta</span>
+    <span class="tag" style="--c:#D4A574;">média</span>
+    <span class="tag" style="--c:#8FA8B8;">baixa</span>
+  </div>
+
+  <div class="sublabel" style="margin-top:6px;">Tags de status</div>
+  <div class="tags">
+    <span class="tag" style="--c:#A8B5A0;">em andamento</span>
+    <span class="tag" style="--c:#D4A574;">aguardando</span>
+    <span class="tag" style="--c:#B89FD9;">ideia</span>
+  </div>
+</div></body></html>

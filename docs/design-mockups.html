@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>LifeOS — Design Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /*
+    LifeOS — Editorial Dashboard
+    Concept: Patek Philippe meets Linear. Quiet luxury for an ambitious 19yo.
+    Typography drives hierarchy; accent colors as atmosphere, not decoration.
+    Deep blacks with cool undertones. Module identity as halation.
+  */
+  :root {
+    /* Surfaces — deep with cool undertone (navy-derived) */
+    --bg: #08090C;
+    --bg-elev: #0F1115;
+    --bg-elev-2: #15181E;
+    --bg-elev-3: #1C2028;
+    --line: rgba(255,255,255,0.06);
+    --line-strong: rgba(255,255,255,0.10);
+    --line-grid: rgba(255,255,255,0.025); /* subtle paper grid */
+
+    /* Text */
+    --text: #F5F5F7;
+    --text-2: rgba(245,245,247,0.65);
+    --text-3: rgba(245,245,247,0.42);
+    --text-4: rgba(245,245,247,0.28);
+
+    /* Module identity */
+    --tawa: #4A7AB8;
+    --tawa-deep: #1B3654;
+    --tawa-halo: rgba(74,122,184,0.15);
+    --utfpr: #FFCC00;
+    --ruah: #818CF8;
+    --treinos: #4ADE80;
+    --projetos: #22D3EE;
+    --intercambio: #FBBF24;
+
+    /* Priority */
+    --p-high: #F87171;
+    --p-med: #FB923C;
+    --p-low: #60A5FA;
+    --p-none: #6B7280;
+
+    /* Fonts */
+    --font-display: 'Fraunces', 'Times New Roman', serif;
+    --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Geist Mono', 'SF Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #0a0a0a;
+    color: var(--text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* Page chrome */
+  .page {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .page-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 12px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .page-header h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 42px;
+    letter-spacing: -0.02em;
+  }
+  .page-header h1 em {
+    font-style: italic;
+    color: var(--tawa);
+  }
+  .page-header .meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .page-sub {
+    color: var(--text-2);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 700px;
+    margin-bottom: 48px;
+  }
+
+  /* Phone frames row */
+  .phones {
+    display: flex;
+    gap: 40px;
+    overflow-x: auto;
+    padding: 16px 0 48px;
+    scroll-snap-type: x mandatory;
+  }
+  .phone-wrap {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .phone-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding-left: 4px;
+  }
+  .phone-label em {
+    color: var(--tawa);
+    font-style: normal;
+  }
+  .phone {
+    width: 393px;
+    height: 852px;
+    border-radius: 56px;
+    background: var(--bg);
+    box-shadow:
+      0 0 0 12px #1a1a1a,
+      0 0 0 13px #2a2a2a,
+      0 60px 100px rgba(0,0,0,0.6),
+      0 20px 50px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    /* Subtle "paper grid" texture — only on bg, not interactive */
+    background-image:
+      linear-gradient(var(--line-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Status bar */
+  .statusbar {
+    height: 54px;
+    padding: 18px 32px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .statusbar .icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text);
+  }
+  .statusbar .icons svg { width: 16px; height: 11px; }
+
+  /* Dynamic Island */
+  .island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 122px;
+    height: 36px;
+    background: #000;
+    border-radius: 18px;
+  }
+
+  /* Tab bar */
+  .tabbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px 28px;
+    background: linear-gradient(to top, var(--bg) 70%, transparent);
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+  }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    color: var(--text-3);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .tab.active { color: var(--text); }
+  .tab .ico {
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tab.active .ico { color: var(--tawa); }
+
+  /* ========================================== */
+  /* SCREEN 1 — HOJE                            */
+  /* ========================================== */
+  .screen-hoje {
+    padding: 12px 24px 120px;
+    height: calc(100% - 54px);
+    overflow-y: auto;
+  }
+  .hoje-head {
+    margin-top: 8px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .hoje-head .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 8px;
+  }
+  .hoje-head .greeting {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 48px;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+  .hoje-head .greeting em {
+    font-style: italic;
+    color: var(--tawa);
+    font-weight: 400;
+  }
+  .hoje-head .date {
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hoje-head .date::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--tawa);
+    box-shadow: 0 0 12px var(--tawa);
+  }
+
+  /* Foco do dia — hero card */
+  .foco {
+    background:
+      radial-gradient(circle at 0% 0%, var(--tawa-halo), transparent 60%),
+      var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 22px 22px 18px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .foco-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+  }
+  .foco-head .title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  .foco-head .count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.05em;
+  }
+  .foco-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .foco-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    align-items: flex-start;
+  }
+  .foco-item:first-child { border-top: none; padding-top: 4px; }
+  .foco-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+    padding-top: 2px;
+    min-width: 18px;
+    letter-spacing: 0.05em;
+  }
+  .foco-text {
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .foco-text .mod {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 6px;
+    vertical-align: 2px;
+  }
+  .mod-tawa { background: var(--tawa-halo); color: var(--tawa); }
+  .mod-utfpr { background: rgba(255,204,0,0.15); color: var(--utfpr); }
+  .mod-ruah { background: rgba(129,140,248,0.15); color: var(--ruah); }
+  .foco-prio {
+    width: 4px;
+    align-self: stretch;
+    border-radius: 2px;
+    background: var(--p-high);
+  }
+  .foco-prio.med { background: var(--p-med); }
+  .foco-prio.low { background: var(--p-low); }
+
+  /* Módulos section */
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+  }
+  .section-head h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text-2);
+    letter-spacing: 0;
+  }
+  .section-head .all {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .mod-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 92px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mod-card .glow {
+    position: absolute;
+    top: -20px; right: -20px;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    opacity: 0.20;
+    filter: blur(20px);
+  }
+  .mod-card .name {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mod-card .name::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .mod-card .num {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .mod-card .desc {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .mod-card.tawa { background: linear-gradient(135deg, var(--tawa-halo), transparent), var(--bg-elev); }
+  .mod-card.tawa .name::before, .mod-card.tawa .glow { background: var(--tawa); }
+  .mod-card.tawa .num { color: var(--tawa); }
+  .mod-card.utfpr .name::before, .mod-card.utfpr .glow { background: var(--utfpr); }
+  .mod-card.utfpr .num { color: var(--utfpr); }
+  .mod-card.ruah .name::before, .mod-card.ruah .glow { background: var(--ruah); }
+  .mod-card.ruah .num { color: var(--ruah); }
+  .mod-card.treinos .name::before, .mod-card.treinos .glow { background: var(--treinos); }
+  .mod-card.treinos .num { color: var(--treinos); }
+  .mod-card.projetos .name::before, .mod-card.projetos .glow { background: var(--projetos); }
+  .mod-card.projetos .num { color: var(--projetos); }
+  .mod-card.intercambio .name::before, .mod-card.intercambio .glow { background: var(--intercambio); }
+  .mod-card.intercambio .num { color: var(--intercambio); }
+
+  /* ========================================== */
+  /* SCREEN 2 — TAWA                            */
+  /* ========================================== */
+  .screen-tawa {
+    padding: 12px 0 120px;
+    height: calc(100% - 54px);
+    overflow-y: auto;
+  }
+  .tawa-head {
+    padding: 8px 24px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .tawa-logo {
+    width: 52px; height: 52px;
+    background: var(--tawa-deep);
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .tawa-logo svg { width: 28px; height: 28px; }
+  .tawa-head .text .small {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 2px;
+  }
+  .tawa-head .text .title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .tawa-head .text .sub {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-2);
+  }
+
+  /* Sector chips */
+  .chips {
+    display: flex;
+    gap: 8px;
+    padding: 4px 24px 16px;
+    overflow-x: auto;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    white-space: nowrap;
+  }
+  .chip .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--p-none);
+  }
+  .chip.active {
+    background: rgba(74,122,184,0.12);
+    border-color: var(--tawa);
+    color: var(--text);
+  }
+  .chip.active .dot { background: var(--tawa); }
+  .chip[data-c="juridico"] .dot { background: #A855F7; }
+  .chip[data-c="logistica"] .dot { background: #22C55E; }
+  .chip[data-c="admin"] .dot { background: #F59E0B; }
+  .chip[data-c="financeiro"] .dot { background: #EF4444; }
+
+  /* Status segmented */
+  .status-seg {
+    margin: 0 24px 16px;
+    background: var(--bg-elev);
+    border-radius: 12px;
+    padding: 4px;
+    display: flex;
+    gap: 2px;
+    border: 1px solid var(--line);
+  }
+  .seg {
+    flex: 1;
+    padding: 9px 10px;
+    border-radius: 9px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .seg.active {
+    background: var(--bg-elev-3);
+    color: var(--text);
+  }
+  .seg .badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    background: rgba(255,255,255,0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    min-width: 18px;
+  }
+  .seg.active .badge {
+    background: var(--tawa-halo);
+    color: var(--tawa);
+  }
+
+  /* Tasks list */
+  .tasks { padding: 4px 24px 0; display: flex; flex-direction: column; gap: 8px; }
+  .task {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 14px 14px 18px;
+    display: flex;
+    gap: 12px;
+    position: relative;
+  }
+  .task .prio-bar {
+    position: absolute;
+    left: 0; top: 12px; bottom: 12px;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+  }
+  .task.high .prio-bar { background: var(--p-high); }
+  .task.med .prio-bar { background: var(--p-med); }
+  .task.low .prio-bar { background: var(--p-low); }
+  .task .body { flex: 1; }
+  .task .title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .task .meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .task .meta .sector {
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .task .meta .sector::before {
+    content: '';
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--tawa);
+  }
+  .task .meta .due { color: var(--p-med); }
+  .task .meta .due.today { color: var(--p-high); }
+  .task .meta .has-notes { color: var(--text-3); }
+  .task .from {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .task .from .avatar {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--bg-elev-3);
+    color: var(--text-2);
+    font-size: 9px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* FAB */
+  .fab {
+    position: absolute;
+    right: 24px; bottom: 110px;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--tawa) 0%, var(--tawa-deep) 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 8px 24px rgba(74,122,184,0.45),
+      0 4px 8px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    font-size: 24px;
+    font-weight: 300;
+  }
+
+  /* ========================================== */
+  /* SCREEN 3 — FORM CRIAR                      */
+  /* ========================================== */
+  .screen-form {
+    padding: 0 0 120px;
+    height: calc(100% - 54px);
+    overflow-y: auto;
+  }
+  .form-head {
+    padding: 12px 24px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .form-head .cancel {
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .form-head .title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  .form-head .save {
+    color: var(--tawa);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .form-body { padding: 28px 24px 32px; display: flex; flex-direction: column; gap: 28px; }
+
+  .field-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .field-input {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--text);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    padding: 0 0 12px;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    width: 100%;
+    outline: none;
+  }
+  .field-input::placeholder { color: var(--text-4); font-style: italic; }
+  .field-input:focus { border-bottom-color: var(--tawa); }
+
+  .field-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    padding: 7px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--p-none); }
+  .pill.active {
+    color: var(--text);
+    border-color: currentColor;
+  }
+  .pill.p-high { color: var(--p-high); }
+  .pill.p-high .dot { background: var(--p-high); }
+  .pill.p-high.active { background: rgba(248,113,113,0.12); }
+  .pill.p-med { color: var(--p-med); }
+  .pill.p-med .dot { background: var(--p-med); }
+  .pill.p-med.active { background: rgba(251,146,60,0.12); }
+  .pill.p-low .dot { background: var(--p-low); }
+  .pill.s-comercial.active { background: var(--tawa-halo); color: var(--tawa); border-color: var(--tawa); }
+  .pill.s-comercial .dot { background: var(--tawa); }
+  .pill.s-juridico .dot { background: #A855F7; }
+  .pill.s-logistica .dot { background: #22C55E; }
+
+  .field-prazo {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .field-prazo .when {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .field-prazo .when .day {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 18px;
+  }
+  .field-prazo .when .time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.05em;
+  }
+  .field-prazo .icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--tawa-halo);
+    color: var(--tawa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .field-textarea {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    min-height: 100px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    width: 100%;
+    outline: none;
+    resize: none;
+  }
+  .field-textarea::placeholder { color: var(--text-4); font-style: italic; }
+
+  /* Floating notes */
+  .annotation {
+    margin-top: 24px;
+    padding-left: 16px;
+    border-left: 2px solid var(--tawa);
+    color: var(--text-2);
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 720px;
+  }
+  .annotation em {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--text);
+  }
+  .annotation .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--tawa);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+    color: var(--text-3);
+    font-size: 12px;
+    line-height: 1.6;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+  }
+  .footer h4 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--text-2);
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .footer ul { list-style: none; }
+  .footer li {
+    padding: 4px 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .footer li .v { color: var(--text-2); }
+  .swatch {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .swatch::before {
+    content: ''; width: 10px; height: 10px; border-radius: 2px;
+    background: currentColor;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="page-header">
+    <h1>LifeOS <em>—</em> Design</h1>
+    <div class="meta">v0.1 · 2026.05.26 · gustavo</div>
+  </div>
+  <p class="page-sub">
+    Design system para LifeOS. Editorial dashboard com personalidade discreta. Tipografia serif para
+    momentos, monospace para metadados, geométrica para corpo. Cores de módulo funcionam como
+    atmosfera (halação) e não como decoração. Inspirações: Linear, Things 3, Cron, Patek Philippe.
+  </p>
+
+  <div class="phones">
+
+    <!-- ==================== SCREEN 1: HOJE ==================== -->
+    <div class="phone-wrap">
+      <div class="phone-label">01 <em>—</em> Hoje · Dashboard</div>
+      <div class="phone">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span>22:34</span>
+          <span class="icons">
+            <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 9h2v2H1zM5 7h2v4H5zM9 5h2v6H9zM13 3h2v8h-2z"/></svg>
+            <svg viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 4c4-3 10-3 14 0M3 6c3-2 7-2 10 0M5 8c2-1 4-1 6 0"/></svg>
+            <span style="opacity:.6;font-size:11px;font-weight:500;">38%</span>
+          </span>
+        </div>
+
+        <div class="screen-hoje">
+          <div class="hoje-head">
+            <div class="label">Quarta · 26 de maio</div>
+            <h2 class="greeting">Boa noite,<br><em>Gustavo</em>.</h2>
+            <div class="date">3 prioridades · 2 prazos esta semana</div>
+          </div>
+
+          <div class="foco">
+            <div class="foco-head">
+              <div class="title">Foco do dia</div>
+              <div class="count">03 / 05</div>
+            </div>
+            <div class="foco-list">
+              <div class="foco-item">
+                <div class="foco-prio"></div>
+                <div class="foco-num">01</div>
+                <div class="foco-text">
+                  <span class="mod mod-tawa">TAWA</span>Revisar proposta cliente XYZ
+                </div>
+              </div>
+              <div class="foco-item">
+                <div class="foco-prio med"></div>
+                <div class="foco-num">02</div>
+                <div class="foco-text">
+                  <span class="mod mod-utfpr">UTFPR</span>Entregar exercício Computação I
+                </div>
+              </div>
+              <div class="foco-item">
+                <div class="foco-prio low"></div>
+                <div class="foco-num">03</div>
+                <div class="foco-text">
+                  <span class="mod mod-ruah">RUAH</span>Preparar reunião do ministério
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <h3>por área</h3>
+            <div class="all">06 módulos</div>
+          </div>
+
+          <div class="modules-grid">
+            <div class="mod-card tawa">
+              <div class="glow"></div>
+              <div class="name">TAWA</div>
+              <div class="num">8</div>
+              <div class="desc">pendentes · Comercial</div>
+            </div>
+            <div class="mod-card treinos">
+              <div class="glow"></div>
+              <div class="name">Treinos</div>
+              <div class="num">19h</div>
+              <div class="desc">Jiu-Jitsu hoje</div>
+            </div>
+            <div class="mod-card utfpr">
+              <div class="glow"></div>
+              <div class="name">UTFPR</div>
+              <div class="num">2</div>
+              <div class="desc">trabalhos · prazo sexta</div>
+            </div>
+            <div class="mod-card ruah">
+              <div class="glow"></div>
+              <div class="name">RUAH</div>
+              <div class="num">21h</div>
+              <div class="desc">reunião hoje</div>
+            </div>
+            <div class="mod-card projetos">
+              <div class="glow"></div>
+              <div class="name">Projetos</div>
+              <div class="num">3</div>
+              <div class="desc">em andamento</div>
+            </div>
+            <div class="mod-card intercambio">
+              <div class="glow"></div>
+              <div class="name">Intercâmbio</div>
+              <div class="num">8/24</div>
+              <div class="desc">checklist</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabbar">
+          <div class="tab active">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L12 4l9 8v8a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1z" fill="currentColor"/></svg>
+            </div>
+            Hoje
+          </div>
+          <div class="tab">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            </div>
+            TAWA
+          </div>
+          <div class="tab">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 17l3-3 2 2 4-5 5 5"/><circle cx="8" cy="7" r="2"/></svg>
+            </div>
+            Treinos
+          </div>
+          <div class="tab">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+            </div>
+            Mais
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN 2: TAWA ==================== -->
+    <div class="phone-wrap">
+      <div class="phone-label">02 <em>—</em> TAWA · Tarefas</div>
+      <div class="phone">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span>22:34</span>
+          <span class="icons">
+            <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 9h2v2H1zM5 7h2v4H5zM9 5h2v6H9zM13 3h2v8h-2z"/></svg>
+            <span style="opacity:.6;font-size:11px;font-weight:500;">38%</span>
+          </span>
+        </div>
+
+        <div class="screen-tawa">
+          <div class="tawa-head">
+            <div class="tawa-logo">
+              <!-- Logo TAWA simplificado: escudo com TG -->
+              <svg viewBox="0 0 32 32" fill="none">
+                <path d="M5 6h22v8c0 6-5 11-11 12-6-1-11-6-11-12V6z" stroke="white" stroke-width="1.5"/>
+                <path d="M10 11h12M14 11v9M22 11v9M22 17h-4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="text">
+              <div class="small">Trabalho · Tarefas</div>
+              <div class="title">TAWA</div>
+              <div class="sub">8 pendentes · 3 prazos esta semana</div>
+            </div>
+          </div>
+
+          <div class="chips">
+            <div class="chip active"><span class="dot"></span>Todos · 8</div>
+            <div class="chip" data-c="comercial"><span class="dot"></span>Comercial · 5</div>
+            <div class="chip" data-c="juridico"><span class="dot"></span>Jurídico · 2</div>
+            <div class="chip" data-c="logistica"><span class="dot"></span>Logística · 1</div>
+            <div class="chip" data-c="admin"><span class="dot"></span>Admin</div>
+          </div>
+
+          <div class="status-seg">
+            <div class="seg active">A fazer<span class="badge">8</span></div>
+            <div class="seg">Em andamento<span class="badge">3</span></div>
+            <div class="seg">Feito<span class="badge">14</span></div>
+          </div>
+
+          <div class="tasks">
+            <div class="task high">
+              <div class="prio-bar"></div>
+              <div class="body">
+                <div class="title">Revisar proposta cliente XYZ — adesão Art. 86</div>
+                <div class="meta">
+                  <span class="sector">Comercial</span>
+                  <span>·</span>
+                  <span class="due today">Hoje · 18h</span>
+                  <span>·</span>
+                  <span class="has-notes">📝</span>
+                </div>
+                <div class="from">
+                  <span class="avatar">P</span>
+                  Delegado por Pai
+                </div>
+              </div>
+            </div>
+
+            <div class="task med">
+              <div class="prio-bar"></div>
+              <div class="body">
+                <div class="title">Contrato Jurídico — revisão cláusula 4.2</div>
+                <div class="meta">
+                  <span class="sector" style="color: #C084FC;">Jurídico</span>
+                  <span>·</span>
+                  <span class="due">Amanhã</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="task med">
+              <div class="prio-bar"></div>
+              <div class="body">
+                <div class="title">Levantamento de preços — fornecedor BR</div>
+                <div class="meta">
+                  <span class="sector">Comercial</span>
+                  <span>·</span>
+                  <span>Sem prazo</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="task low">
+              <div class="prio-bar"></div>
+              <div class="body">
+                <div class="title">Email follow-up Sec. Saúde Londrina</div>
+                <div class="meta">
+                  <span class="sector">Comercial</span>
+                  <span>·</span>
+                  <span class="due">Sex · 14h</span>
+                </div>
+                <div class="from">
+                  <span class="avatar">M</span>
+                  Delegado por Michele
+                </div>
+              </div>
+            </div>
+
+            <div class="task low">
+              <div class="prio-bar"></div>
+              <div class="body">
+                <div class="title">Atualizar planilha de leads ConLicitação</div>
+                <div class="meta">
+                  <span class="sector">Comercial</span>
+                  <span>·</span>
+                  <span>Sem prazo</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fab">+</div>
+
+        <div class="tabbar">
+          <div class="tab">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12L12 4l9 8v8a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1z"/></svg>
+            </div>
+            Hoje
+          </div>
+          <div class="tab active">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#0F1115" stroke-width="2" fill="none"/></svg>
+            </div>
+            TAWA
+          </div>
+          <div class="tab">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 17l3-3 2 2 4-5 5 5"/><circle cx="8" cy="7" r="2"/></svg>
+            </div>
+            Treinos
+          </div>
+          <div class="tab">
+            <div class="ico">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+            </div>
+            Mais
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN 3: NOVA TAREFA ==================== -->
+    <div class="phone-wrap">
+      <div class="phone-label">03 <em>—</em> Criar tarefa</div>
+      <div class="phone">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span>22:35</span>
+          <span class="icons">
+            <svg viewBox="0 0 16 11" fill="currentColor"><path d="M1 9h2v2H1zM5 7h2v4H5zM9 5h2v6H9zM13 3h2v8h-2z"/></svg>
+            <span style="opacity:.6;font-size:11px;font-weight:500;">38%</span>
+          </span>
+        </div>
+
+        <div class="screen-form">
+          <div class="form-head">
+            <span class="cancel">Cancelar</span>
+            <span class="title">Nova <em style="font-style:italic;">tarefa</em></span>
+            <span class="save">Criar</span>
+          </div>
+
+          <div class="form-body">
+            <div>
+              <label class="field-label">Título</label>
+              <input class="field-input" type="text" value="Revisar proposta cliente XYZ" placeholder="O que precisa ser feito?">
+            </div>
+
+            <div>
+              <label class="field-label">Setor</label>
+              <div class="field-row">
+                <div class="pill s-comercial active"><span class="dot"></span>Comercial</div>
+                <div class="pill s-juridico"><span class="dot"></span>Jurídico</div>
+                <div class="pill s-logistica"><span class="dot"></span>Logística</div>
+                <div class="pill"><span class="dot"></span>Admin</div>
+              </div>
+            </div>
+
+            <div>
+              <label class="field-label">Prioridade</label>
+              <div class="field-row">
+                <div class="pill p-high active"><span class="dot"></span>Alta</div>
+                <div class="pill p-med"><span class="dot"></span>Média</div>
+                <div class="pill p-low"><span class="dot"></span>Baixa</div>
+                <div class="pill"><span class="dot"></span>Sem</div>
+              </div>
+            </div>
+
+            <div>
+              <label class="field-label">Prazo</label>
+              <div class="field-prazo">
+                <div class="when">
+                  <div class="day">Quarta, 26 mai</div>
+                  <div class="time">18:00 · em 4h 24min</div>
+                </div>
+                <div class="icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                    <rect x="3" y="5" width="18" height="16" rx="2"/>
+                    <path d="M3 9h18M8 3v4M16 3v4"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="field-label">Delegado por <span style="text-transform:none;letter-spacing:0;color:var(--text-4);font-family:var(--font-sans);font-style:italic;">(opcional)</span></label>
+              <input class="field-input" type="text" value="Pai" placeholder="Quem te passou?" style="font-size:18px;">
+            </div>
+
+            <div>
+              <label class="field-label">Observações</label>
+              <textarea class="field-textarea" placeholder="Contexto, links, decisões prévias…">Reunião com cliente foi positiva. Ajustar valor da seção 3 (mencionou 15% acima do esperado). Anexar planilha de custos antes de enviar.</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Anotações de design -->
+  <div class="annotation">
+    <span class="num">N. 01 — TIPOGRAFIA</span>
+    <em>Fraunces</em> (serif editorial com personalidade) para saudações, títulos de seção e momentos
+    com "respiração". <em>Geist</em> (sans geométrico, mais característico que Inter) para corpo,
+    botões, dados. <em>Geist Mono</em> para metadados, IDs, horários e contagens — dá peso de
+    "informação" sem ser computacional.
+  </div>
+
+  <div class="annotation">
+    <span class="num">N. 02 — COR COMO ATMOSFERA</span>
+    Cada módulo tem cor — mas ela aparece como <em>halação</em> sutil (gradiente radial 15% de
+    opacidade nos cards) e como <em>indicador</em> (dot 6px, barra 4px), nunca preenchendo blocos
+    grandes. Resultado: identidade legível sem virar "patchwork colorido".
+  </div>
+
+  <div class="annotation">
+    <span class="num">N. 03 — HIERARQUIA NUMERADA</span>
+    Foco do Dia usa <em>01 / 02 / 03</em> em monospace — empresta a ergonomia do bullet journal e do
+    Linear. Combinado com a barra de prioridade colorida, você lê a importância pela esquerda e a
+    ordem pelo número.
+  </div>
+
+  <div class="annotation">
+    <span class="num">N. 04 — DENSIDADE EQUILIBRADA</span>
+    Telas com muito ar negativo no topo (header gigante) e densidade controlada nas listas (padding
+    14px nos cards de tarefa, line-height 1.35). Evita o "tudo-ao-mesmo-tempo" do Notion.
+  </div>
+
+  <!-- Design system footer -->
+  <div class="footer">
+    <div>
+      <h4>Tipografia</h4>
+      <ul>
+        <li><span>Display</span><span class="v">Fraunces · 300-500</span></li>
+        <li><span>Sans</span><span class="v">Geist · 400-600</span></li>
+        <li><span>Mono</span><span class="v">Geist Mono · 400</span></li>
+        <li><span>Display sizes</span><span class="v">48 / 32 / 22</span></li>
+        <li><span>Body</span><span class="v">15 / 14 / 13 / 12</span></li>
+        <li><span>Meta</span><span class="v">11 / 10 (mono)</span></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Surfaces</h4>
+      <ul>
+        <li><span class="swatch" style="color:#08090C">bg</span><span class="v">#08090C</span></li>
+        <li><span class="swatch" style="color:#0F1115">elev-1</span><span class="v">#0F1115</span></li>
+        <li><span class="swatch" style="color:#15181E">elev-2</span><span class="v">#15181E</span></li>
+        <li><span class="swatch" style="color:#1C2028">elev-3</span><span class="v">#1C2028</span></li>
+        <li><span>line</span><span class="v">white / 6%</span></li>
+        <li><span>grid</span><span class="v">white / 2.5%</span></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Módulos</h4>
+      <ul>
+        <li><span class="swatch" style="color:#4A7AB8">TAWA</span><span class="v">#4A7AB8</span></li>
+        <li><span class="swatch" style="color:#FFCC00">UTFPR</span><span class="v">#FFCC00</span></li>
+        <li><span class="swatch" style="color:#818CF8">RUAH</span><span class="v">#818CF8</span></li>
+        <li><span class="swatch" style="color:#4ADE80">Treinos</span><span class="v">#4ADE80</span></li>
+        <li><span class="swatch" style="color:#22D3EE">Projetos</span><span class="v">#22D3EE</span></li>
+        <li><span class="swatch" style="color:#FBBF24">Intercâmbio</span><span class="v">#FBBF24</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

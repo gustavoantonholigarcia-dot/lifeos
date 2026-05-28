@@ -1,0 +1,32 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .frame { display: flex; align-items: center; gap: 40px; }
+  .fab {
+    width: 64px; height: 64px;
+    border-radius: var(--r-full);
+    background: linear-gradient(135deg, #E8B4A0 0%, #D4A574 100%);
+    box-shadow: 0 8px 28px -8px rgba(232,180,160,0.55), 0 2px 6px rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    color: #1C1917;
+    font-size: 28px; font-weight: 300;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .specs { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); }
+  .specs b { color: var(--text); font-weight: 500; }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">FAB · único elemento com gradiente + sombra</div>
+  <div class="frame">
+    <div class="fab">+</div>
+    <div class="specs">
+      <div><b>background</b> linear-gradient(135deg, #E8B4A0 → #D4A574)</div>
+      <div><b>size</b> 56–64 · radius full · icon stone-900</div>
+      <div><b>shadow</b> 0 8px 28px -8px rgba(232,180,160,.45)</div>
+      <div><b>press</b> scale 0.94 · 180ms cubic-bezier(.2,.8,.2,1)</div>
+    </div>
+  </div>
+</div></body></html>

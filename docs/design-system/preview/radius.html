@@ -1,0 +1,20 @@
+<!-- @dsCard group="Spacing" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .row5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .sq { width: 88px; height: 88px; background: var(--elev-1); border: 1px solid var(--line); }
+  .name { font-family: var(--font-body); font-weight: 600; font-size: 12px; }
+  .spec { font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); letter-spacing: 0.04em; }
+</style></head>
+<body><div class="card">
+  <div style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-mute);">Radius · squircles generosos, nunca 4–8px</div>
+  <div class="row5">
+    <div class="item"><div class="sq" style="border-radius:10px;"></div><div class="name">sm</div><div class="spec">10 · pills, tags</div></div>
+    <div class="item"><div class="sq" style="border-radius:16px;"></div><div class="name">md</div><div class="spec">16 · botões, cards menores</div></div>
+    <div class="item"><div class="sq" style="border-radius:22px;"></div><div class="name">lg</div><div class="spec">22 · cards principais</div></div>
+    <div class="item"><div class="sq" style="border-radius:28px;"></div><div class="name">xl</div><div class="spec">28 · sheets, identidade</div></div>
+    <div class="item"><div class="sq" style="border-radius:999px;"></div><div class="name">full</div><div class="spec">pills · FAB</div></div>
+  </div>
+</div></body></html>

@@ -1,0 +1,78 @@
+<!-- @dsCard group="Type" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="_card.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Geist+Mono:wght@400;500&family=DM+Mono:wght@400;500&family=Commissioner:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .opt {
+    background: var(--elev-1); border-radius: var(--r-md);
+    padding: 14px 18px;
+    display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center;
+    border: 1px solid transparent;
+  }
+  .opt.rec { border-color: rgba(232,180,160,0.35); background: color-mix(in oklab, #E8B4A0 6%, var(--elev-1)); }
+  .nums {
+    display: flex; gap: 18px; align-items: baseline;
+    color: var(--text);
+    font-weight: 400; font-size: 22px;
+  }
+  .nums .sec { font-size: 13px; color: var(--text-mute); }
+  .nums .nm { font-size: 14px; color: var(--text-dim); }
+  .meta {
+    display: flex; flex-direction: column; gap: 3px; text-align: right;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.04em; color: var(--text-mute);
+  }
+  .meta b { color: var(--text); font-weight: 500; font-size: 11px; }
+  .meta .rec-tag { color: #E8B4A0; }
+  .legend { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+  .note { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+</style></head>
+<body><div class="card">
+  <div class="legend">Mono · alternativas ao JetBrains Mono · foco nos numerais</div>
+  <div class="stack">
+    <div class="opt rec">
+      <div class="nums" style="font-family: 'IBM Plex Mono', monospace;">
+        <span>14:30</span><span class="sec">qui · 28 mai</span><span class="nm">01 / 02 / 03</span>
+      </div>
+      <div class="meta">
+        <span class="rec-tag">recomendado</span>
+        <b>IBM Plex Mono</b>
+        <span>par com Plex Serif</span>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="nums" style="font-family: 'Geist Mono', monospace;">
+        <span>14:30</span><span class="sec">qui · 28 mai</span><span class="nm">01 / 02 / 03</span>
+      </div>
+      <div class="meta">
+        <b>Geist Mono</b>
+        <span>moderno · Vercel</span>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="nums" style="font-family: 'DM Mono', monospace;">
+        <span>14:30</span><span class="sec">qui · 28 mai</span><span class="nm">01 / 02 / 03</span>
+      </div>
+      <div class="meta">
+        <b>DM Mono</b>
+        <span>humanista · suave</span>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="nums" style="font-family: 'Commissioner', sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;">
+        <span>14:30</span><span class="sec">qui · 28 mai</span><span class="nm">01 / 02 / 03</span>
+      </div>
+      <div class="meta">
+        <b>Commissioner</b>
+        <span>tabular sans</span>
+        <span>(alt. não-mono)</span>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <b style="color: var(--text);">IBM Plex Mono</b> casa com Plex Serif se você escolher essa direção. Os 0/1/4/5/7 dele têm desenho mais "engenharia" — sérios sem ser frios. Diz qual e atualizo o sistema.
+  </div>
+</div></body></html>

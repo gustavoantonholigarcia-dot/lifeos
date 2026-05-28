@@ -1,0 +1,38 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 18px;
+    border-radius: var(--r-md);
+    font-family: var(--font-body); font-weight: 500; font-size: 15px;
+    border: none; cursor: pointer;
+    transition: transform 180ms var(--ease), opacity 180ms var(--ease);
+  }
+  .btn-primary {
+    background: var(--text); color: var(--bg);
+  }
+  .btn-secondary {
+    background: var(--elev-1); color: var(--text); border: 1px solid var(--line-strong);
+  }
+  .btn-ghost {
+    background: transparent; color: var(--text-mute);
+  }
+  .btn-danger {
+    background: color-mix(in oklab, #C97064 22%, transparent);
+    color: #C97064;
+  }
+  .label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; margin-bottom: 6px; }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Buttons · radius md (16) · press: scale 0.97</div>
+  <div class="grid">
+    <div><div class="label">Primary · off-white sobre stone</div><button class="btn btn-primary">Criar tarefa</button></div>
+    <div><div class="label">Secondary · elev-1</div><button class="btn btn-secondary">Editar</button></div>
+    <div><div class="label">Ghost</div><button class="btn btn-ghost">Cancelar</button></div>
+    <div><div class="label">Destructive · terracotta 22%</div><button class="btn btn-danger">Excluir</button></div>
+  </div>
+</div></body></html>

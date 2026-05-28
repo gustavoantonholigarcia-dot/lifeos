@@ -1,0 +1,37 @@
+<!-- @dsCard group="Colors" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .grid7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .mod {
+    background: var(--elev-1);
+    border-radius: var(--r-md);
+    padding: 14px 12px;
+    display: flex; flex-direction: column; gap: 12px;
+    position: relative; overflow: hidden;
+    height: 154px;
+  }
+  .mod::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(120% 80% at 100% 0%, var(--c) 12%, transparent 60%);
+    opacity: 1;
+    pointer-events: none;
+  }
+  .dot { width: 28px; height: 28px; border-radius: var(--r-full); background: var(--c); z-index: 1; }
+  .label { font-family: var(--font-body); font-weight: 600; font-size: 12px; color: var(--text); z-index: 1; }
+  .hex   { font-family: var(--font-mono); font-size: 10px; color: var(--text-mute); letter-spacing: 0.04em; z-index: 1; }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Cores por módulo · halação 12% no canto</div>
+  <div class="grid7">
+    <div class="mod" style="--c:#6B8FB8"><div class="dot"></div><div><div class="label">TAWA</div><div class="hex">#6B8FB8</div></div></div>
+    <div class="mod" style="--c:#E8B96B"><div class="dot"></div><div><div class="label">UTFPR</div><div class="hex">#E8B96B</div></div></div>
+    <div class="mod" style="--c:#F2E7D2"><div class="dot"></div><div><div class="label">RUAH</div><div class="hex">#F2E7D2</div></div></div>
+    <div class="mod" style="--c:#87A878"><div class="dot"></div><div><div class="label">Treinos</div><div class="hex">#87A878</div></div></div>
+    <div class="mod" style="--c:#7BB5C2"><div class="dot"></div><div><div class="label">Projetos</div><div class="hex">#7BB5C2</div></div></div>
+    <div class="mod" style="--c:#D4A574"><div class="dot"></div><div><div class="label">Intercâmbio</div><div class="hex">#D4A574</div></div></div>
+    <div class="mod" style="--c:#B89FD9"><div class="dot"></div><div><div class="label">Estudos</div><div class="hex">#B89FD9</div></div></div>
+  </div>
+</div></body></html>

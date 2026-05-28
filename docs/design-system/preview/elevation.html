@@ -1,0 +1,26 @@
+<!-- @dsCard group="Spacing" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .stack { position: relative; height: 200px; }
+  .layer {
+    position: absolute; border-radius: var(--r-lg);
+    padding: 14px 16px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em;
+  }
+  .l-bg    { left:   0; top: 0;   width: 280px; height: 200px; background: #1C1917; color: #F5F1ED; }
+  .l-elev1 { left:  60px; top: 36px; width: 280px; height: 144px; background: #292524; color: #F5F1ED; }
+  .l-elev2 { left: 120px; top: 72px; width: 280px; height: 100px; background: #3A332E; color: #F5F1ED; }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Elevation · por superfície, não por sombra</div>
+  <div class="stack">
+    <div class="layer l-bg">bg · #1C1917</div>
+    <div class="layer l-elev1">elev-1 · #292524</div>
+    <div class="layer l-elev2">elev-2 · #3A332E</div>
+  </div>
+  <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-dim); margin-top:auto;">
+    A única sombra real do sistema é a do FAB (peach 45% blur 28).
+  </div>
+</div></body></html>

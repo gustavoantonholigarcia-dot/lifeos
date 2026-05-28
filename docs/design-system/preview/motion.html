@@ -1,0 +1,22 @@
+<!-- @dsCard group="Spacing" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  table { border-collapse: collapse; width: 100%; }
+  td { padding: 8px 0; border-bottom: 1px solid var(--line); font-family: var(--font-body); font-size: 13px; vertical-align: middle; }
+  td.k { font-family: var(--font-mono); font-size: 12px; color: var(--text); width: 160px; }
+  td.v { font-family: var(--font-mono); font-size: 11px; color: var(--text-mute); }
+  .demo { width: 56px; height: 28px; background: var(--peach); border-radius: var(--r-sm); }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Motion · easing & duração</div>
+  <table>
+    <tr><td class="k">--ease</td><td class="v">cubic-bezier(0.2, 0.8, 0.2, 1)</td><td>leve overshoot, decisivo</td></tr>
+    <tr><td class="k">--dur-micro</td><td class="v">120ms</td><td>press / fade pequeno</td></tr>
+    <tr><td class="k">--dur-fast</td><td class="v">180ms</td><td>botão, toggle, hover</td></tr>
+    <tr><td class="k">--dur-med</td><td class="v">240ms</td><td>card abrindo, tab change</td></tr>
+    <tr><td class="k">--dur-slow</td><td class="v">320ms</td><td>sheet modal full</td></tr>
+  </table>
+  <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-dim); margin-top:auto;">Sem bounces molengos. Movimento curto.</div>
+</div></body></html>

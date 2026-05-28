@@ -1,0 +1,49 @@
+<!-- @dsCard group="Brand" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; align-items: stretch; }
+  .lg {
+    background: var(--elev-1); border-radius: var(--r-lg);
+    padding: 18px; display: flex; flex-direction: column; gap: 14px;
+    height: 200px;
+    position: relative; overflow: hidden;
+  }
+  .lg::before { content: ""; position: absolute; inset: 0;
+    background: radial-gradient(140% 100% at 100% 0%, var(--c) 16%, transparent 60%);
+    pointer-events: none; }
+  .lg > * { position: relative; z-index: 1; }
+  .logo-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px; }
+  .logo-wrap img { max-height: 110px; max-width: 100%; object-fit: contain; }
+  .meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--text-mute); display: flex; justify-content: space-between; align-items: center; }
+  .meta b { color: var(--text); font-weight: 500; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+  .legend { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+  .note { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+</style></head>
+<body><div class="card">
+  <div class="legend">Logos · tintadas na cor do módulo · sem fundo branco</div>
+  <div class="grid">
+    <div class="lg" style="--c:#6B8FB8;">
+      <div class="logo-wrap">
+        <img src="../assets/logos/tawa-shield.png" alt="TAWA">
+      </div>
+      <div class="meta"><span><b>TAWA</b> · trabalho</span><span class="dot"></span></div>
+    </div>
+    <div class="lg" style="--c:#E8B96B;">
+      <div class="logo-wrap">
+        <img src="../assets/logos/utfpr-mark.png" alt="UTFPR">
+      </div>
+      <div class="meta"><span><b>UTFPR</b> · universidade</span><span class="dot"></span></div>
+    </div>
+    <div class="lg" style="--c:#F2E7D2;">
+      <div class="logo-wrap">
+        <img src="../assets/logos/ruah-mark.png" alt="RUAH">
+      </div>
+      <div class="meta"><span><b>RUAH</b> · igreja</span><span class="dot"></span></div>
+    </div>
+  </div>
+  <div class="note">
+    PNGs originais tinham fundo branco — processados em silhuetas com fundo transparente, tintadas na cor do módulo. Agora ficam direto sobre a superfície elev-1 + halação radial, como no app.
+  </div>
+</div></body></html>

@@ -1,0 +1,36 @@
+<!-- @dsCard group="Colors" -->
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .sw {
+    border-radius: var(--r-md);
+    height: 132px;
+    padding: 14px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    border: 1px solid var(--line);
+  }
+  .sw .name { font-family: var(--font-body); font-weight: 600; font-size: 13px; }
+  .sw .hex  { font-family: var(--font-mono); font-size: 11px; opacity: 0.7; letter-spacing: 0.04em; }
+  .legend   { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mute); }
+</style></head>
+<body><div class="card">
+  <div class="legend">Surfaces · warm stone (dark-only)</div>
+  <div class="swatches">
+    <div class="sw" style="background:#1C1917; color:#F5F1ED;">
+      <span class="name">bg</span><span class="hex">#1C1917</span>
+    </div>
+    <div class="sw" style="background:#292524; color:#F5F1ED;">
+      <span class="name">elev-1</span><span class="hex">#292524</span>
+    </div>
+    <div class="sw" style="background:#3A332E; color:#F5F1ED;">
+      <span class="name">elev-2</span><span class="hex">#3A332E</span>
+    </div>
+    <div class="sw" style="background:#1C1917; color:#F5F1ED; border-color: rgba(245,241,237,0.08);">
+      <span class="name">line</span><span class="hex">F5F1ED · 8%</span>
+    </div>
+    <div class="sw" style="background:#F5F1ED; color:#1C1917;">
+      <span class="name">text</span><span class="hex">#F5F1ED</span>
+    </div>
+  </div>
+</div></body></html>
