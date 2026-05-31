@@ -3,9 +3,10 @@ import { Plus } from 'lucide-react-native';
 import { FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ModuleHeader } from '@/components/module-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Modules, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing, Warm } from '@/constants/theme';
 import { useIdiomas } from '@/modules/estudos/queries';
 import { NIVEL_LABELS, type IdiomaResumo } from '@/modules/estudos/types';
 import { formatarDataCurta } from '@/shared/format/date';
@@ -16,20 +17,8 @@ export default function EstudosScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <View style={styles.header}>
-          <View style={[styles.iconBox, { backgroundColor: Modules.estudos.accent + '22' }]}>
-            <ThemedText
-              type="display"
-              style={{ fontSize: 24, color: Modules.estudos.accent }}>
-              Aa
-            </ThemedText>
-          </View>
-          <View style={{ flex: 1, gap: 2 }}>
-            <ThemedText type="meta" themeColor="textSecondary">
-              Idiomas · Sessões · Certs
-            </ThemedText>
-            <ThemedText type="displayLG">{Modules.estudos.label}</ThemedText>
-          </View>
+        <View style={styles.headerWrap}>
+          <ModuleHeader module="estudos" eyebrow="Idiomas · Sessões · Certs" />
         </View>
 
         <FlatList
@@ -59,7 +48,7 @@ export default function EstudosScreen() {
         <Pressable
           onPress={() => router.push('/modules/estudos/novo')}
           style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
-          <Plus color={'white' as any} size={26} />
+          <Plus color={'#1C1917' as any} size={26} />
         </Pressable>
       </SafeAreaView>
     </ThemedView>
@@ -152,20 +141,9 @@ function EmptyState({ loading, erro }: { loading: boolean; erro?: string }) {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   safe: { flex: 1 },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.three,
+  headerWrap: {
     paddingHorizontal: Spacing.three,
-    paddingTop: Spacing.two,
     paddingBottom: Spacing.three,
-  },
-  iconBox: {
-    width: 52,
-    height: 52,
-    borderRadius: Radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   list: { padding: Spacing.three, paddingBottom: 140 },
   card: {
@@ -195,13 +173,13 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: Modules.estudos.primary,
+    backgroundColor: Warm.peach,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
+    shadowColor: Warm.peach,
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
   },
 });

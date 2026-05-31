@@ -71,17 +71,17 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: Spacing.three,
     gap: Spacing.two,
-    paddingVertical: Spacing.two,
+    paddingVertical: Spacing.one,
   },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.two,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-    borderRadius: Radius.lg,
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: Radius.full,
     borderWidth: 1,
     backgroundColor: 'rgba(255,255,255,0.04)',
   },
-  dot: { width: 8, height: 8, borderRadius: 4 },
+  dot: { width: 7, height: 7, borderRadius: 3.5 },
 });

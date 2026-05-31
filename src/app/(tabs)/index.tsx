@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { CalendarDays, Sparkles } from 'lucide-react-native';
+import { Ambulance, CalendarDays } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +7,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Modules, Radius, Spacing, type ModuleKey } from '@/constants/theme';
+import { FocoDiaSection } from '@/shared/foco-dia/FocoDiaSection';
 import { QuickCaptureSheet } from '@/shared/quick-capture/QuickCaptureSheet';
+import { ResumoCards, ResumoLocalCard } from '@/shared/resumo/ResumoCard';
+import { GateTracker } from '@/shared/tracking/GateTracker';
 
 function saudacao(hora: number = new Date().getHours()): string {
   if (hora < 5) return 'Boa madrugada';
@@ -16,14 +19,14 @@ function saudacao(hora: number = new Date().getHours()): string {
   return 'Boa noite';
 }
 
-const MODULOS_CARD: { key: ModuleKey; subtitle: string }[] = [
-  { key: 'tawa', subtitle: 'trabalho · veículos especiais' },
-  { key: 'treinos', subtitle: 'judô · jiu · tênis · academia' },
-  { key: 'utfpr', subtitle: 'universidade · eng. produção' },
-  { key: 'ruah', subtitle: 'igreja · encontros' },
-  { key: 'estudos', subtitle: 'idiomas' },
-  { key: 'projetos', subtitle: 'side projects' },
-  { key: 'intercambio', subtitle: 'planejamento' },
+const MODULOS_CARD: { key: ModuleKey; subtitle: string; href: string }[] = [
+  { key: 'tawa', subtitle: 'trabalho · veículos especiais', href: '/tawa' },
+  { key: 'treinos', subtitle: 'judô · jiu · tênis · academia', href: '/treinos' },
+  { key: 'utfpr', subtitle: 'universidade · eng. produção', href: '/utfpr' },
+  { key: 'ruah', subtitle: 'igreja · encontros', href: '/modules/ruah' },
+  { key: 'estudos', subtitle: 'idiomas', href: '/modules/estudos' },
+  { key: 'projetos', subtitle: 'side projects', href: '/modules/projetos' },
+  { key: 'intercambio', subtitle: 'planejamento', href: '/modules/intercambio' },
 ];
 
 export default function HojeScreen() {
@@ -57,17 +60,15 @@ export default function HojeScreen() {
                 Gustavo.
               </ThemedText>
             </ThemedText>
+            <GateTracker />
           </View>
 
+          {/* Resumos (manhã / semanal) */}
+          <ResumoLocalCard />
+          <ResumoCards />
+
           {/* Foco do dia */}
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="meta" themeColor="textSecondary">
-              01 · Foco do dia
-            </ThemedText>
-            <ThemedText type="default" style={{ marginTop: Spacing.three }}>
-              Em breve você poderá fixar 3-5 prioridades aqui.
-            </ThemedText>
-          </ThemedView>
+          <FocoDiaSection />
 
           {/* Cards por módulo */}
           <View style={styles.section}>
@@ -78,9 +79,14 @@ export default function HojeScreen() {
               {MODULOS_CARD.map((item, i) => {
                 const mod = Modules[item.key];
                 return (
-                  <View
+                  <Pressable
                     key={item.key}
-                    style={[styles.miniCard, { borderLeftColor: mod.accent }]}>
+                    onPress={() => router.push(item.href as any)}
+                    style={({ pressed }) => [
+                      styles.miniCard,
+                      { borderLeftColor: mod.accent },
+                      pressed && { opacity: 0.6 },
+                    ]}>
                     <ThemedText type="mono" themeColor="textMuted" style={styles.cardNum}>
                       {String(i + 1).padStart(2, '0')}
                     </ThemedText>
@@ -88,7 +94,7 @@ export default function HojeScreen() {
                     <ThemedText type="small" themeColor="textMuted" numberOfLines={2}>
                       {item.subtitle}
                     </ThemedText>
-                  </View>
+                  </Pressable>
                 );
               })}
             </View>
@@ -99,7 +105,7 @@ export default function HojeScreen() {
         <Pressable
           onPress={() => setQuickOpen(true)}
           style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
-          <Sparkles color={'#1C1917' as any} size={22} />
+          <Ambulance color={'#1C1917' as any} size={22} />
         </Pressable>
 
         <QuickCaptureSheet visible={quickOpen} onClose={() => setQuickOpen(false)} />
@@ -145,11 +151,6 @@ const styles = StyleSheet.create({
   },
   section: { gap: Spacing.three },
   sectionLabel: { paddingHorizontal: Spacing.one },
-  card: {
-    padding: Spacing.three,
-    borderRadius: Radius.lg,
-    gap: Spacing.one,
-  },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

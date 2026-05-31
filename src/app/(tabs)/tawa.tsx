@@ -1,14 +1,15 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { CalendarDays, Plus } from 'lucide-react-native';
+import { CalendarDays, Plus, Users } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
+import { EmptyState as EditorialEmpty } from '@/components/empty-state';
 import { ThemedView } from '@/components/themed-view';
-import { Modules, Spacing } from '@/constants/theme';
+import { Modules, Radius, Spacing, Warm } from '@/constants/theme';
 import { SetorChips } from '@/modules/tawa/components/setor-chips';
 import { StatusTabs } from '@/modules/tawa/components/status-tabs';
 import { SwipeableTaskCard } from '@/modules/tawa/components/swipeable-task-card';
@@ -61,6 +62,12 @@ export default function TawaScreen() {
               {counts.em_andamento > 0 ? ` · ${counts.em_andamento} em andamento` : ''}
             </ThemedText>
           </View>
+          <Pressable
+            onPress={() => router.push('/modules/tawa/contatos')}
+            hitSlop={10}
+            style={({ pressed }) => [styles.agendaBtn, pressed && { opacity: 0.6 }]}>
+            <Users size={20} color={'rgba(245,241,237,0.65)' as any} />
+          </Pressable>
           <Pressable
             onPress={() => router.push('/agenda?modulo=tawa')}
             hitSlop={10}
@@ -122,7 +129,7 @@ export default function TawaScreen() {
         <Pressable
           onPress={() => router.push('/tarefa/nova')}
           style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
-          <Plus color="white" size={28} />
+          <Plus color={'#1C1917' as any} size={28} />
         </Pressable>
       </SafeAreaView>
     </ThemedView>
@@ -156,19 +163,13 @@ function EmptyState({
       </View>
     );
   }
-  const msg =
+  const conteudo =
     status === 'a_fazer'
-      ? 'Nenhuma tarefa pendente.\nToca no + pra criar a primeira.'
+      ? { title: 'Tudo limpo por aqui.', subtitle: 'Toca no + pra criar a primeira tarefa.' }
       : status === 'em_andamento'
-      ? 'Nada em andamento agora.'
-      : 'Nada concluído por aqui.';
-  return (
-    <View style={styles.empty}>
-      <ThemedText type="default" themeColor="textMuted" style={{ textAlign: 'center' }}>
-        {msg}
-      </ThemedText>
-    </View>
-  );
+      ? { title: 'Nada em andamento.', subtitle: 'Puxe uma tarefa pra cá quando começar.' }
+      : { title: 'Nada concluído ainda.', subtitle: 'O que você terminar aparece aqui.' };
+  return <EditorialEmpty title={conteudo.title} subtitle={conteudo.subtitle} />;
 }
 
 const styles = StyleSheet.create({
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.two,
     paddingBottom: Spacing.two,
   },
-  logo: { width: 48, height: 48 },
+  logo: { width: 56, height: 56, borderRadius: Radius.md, overflow: 'hidden' },
   agendaBtn: {
     width: 40,
     height: 40,
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(245,241,237,0.06)',
   },
-  controls: { gap: Spacing.two, paddingBottom: Spacing.two },
+  controls: { gap: Spacing.one, paddingBottom: Spacing.one },
   list: { padding: Spacing.three, paddingBottom: 140 },
   empty: { paddingTop: Spacing.four, alignItems: 'center' },
   fab: {
@@ -201,13 +202,13 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: Modules.tawa.accent,
+    backgroundColor: Warm.peach,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
+    shadowColor: Warm.peach,
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
   },
 });

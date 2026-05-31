@@ -47,6 +47,44 @@ export async function pedirPermissoes(): Promise<boolean> {
 }
 
 // ============================================================================
+// Lembrete diário de foco (hábito → GATE)
+// ============================================================================
+const ID_LEMBRETE_FOCO = 'lembrete-foco-diario';
+
+/**
+ * Agenda um lembrete local diário às 7h: "Qual o foco de hoje?".
+ * Notificação LOCAL (funciona no Expo Go, não depende de push remoto).
+ * Idempotente: cancela o anterior antes de reagendar, então pode chamar
+ * a cada startup sem duplicar.
+ */
+export async function agendarLembreteDiarioFoco(): Promise<void> {
+  try {
+    const ok = await pedirPermissoes();
+    if (!ok) return;
+
+    await Notifications.cancelScheduledNotificationAsync(ID_LEMBRETE_FOCO).catch(
+      () => {},
+    );
+
+    await Notifications.scheduleNotificationAsync({
+      identifier: ID_LEMBRETE_FOCO,
+      content: {
+        title: 'Bom dia',
+        body: 'Qual o foco de hoje?',
+        data: { tipo: 'lembrete_foco' },
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DAILY,
+        hour: 7,
+        minute: 0,
+      },
+    });
+  } catch (e) {
+    console.warn('[notif] falha ao agendar lembrete de foco', e);
+  }
+}
+
+// ============================================================================
 // Schedule / Cancel
 // ============================================================================
 type AgendarInput = {

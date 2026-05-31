@@ -50,6 +50,7 @@ export interface Tarefa {
 
   recorrente: Record<string, unknown> | null;
 
+  modulo_secundario: Modulo | null;
   concluida_em: string | null;
   created_at: string;
   updated_at: string;
@@ -73,6 +74,7 @@ export interface CriarTarefaInput {
   prazo_em?: string; // ISO
   origem?: OrigemTarefa;
   delegado_por?: string;
+  contato_id?: string;
 }
 
 /**

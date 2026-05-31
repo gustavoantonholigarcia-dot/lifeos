@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import AppTabs from '@/components/app-tabs';
 import { useAuth } from '@/shared/auth/use-auth';
 import {
+  agendarLembreteDiarioFoco,
   configurarHandler,
   pedirPermissoes,
 } from '@/shared/notifications/scheduler';
@@ -19,6 +20,7 @@ export default function TabsLayout() {
   useEffect(() => {
     if (user) {
       pedirPermissoes().catch(() => {});
+      agendarLembreteDiarioFoco().catch(() => {});
     }
   }, [user?.id]);
 

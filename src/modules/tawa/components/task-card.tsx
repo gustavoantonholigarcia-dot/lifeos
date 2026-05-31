@@ -40,6 +40,16 @@ export function TaskCard({ tarefa, onPress, onLongPress, onToggleConcluido }: Pr
   const prazo = tarefa.prazo_em ? formatarPrazoRelativo(tarefa.prazo_em) : null;
   const corPrazo = prazo ? URGENCIA_CORES[prazo.urgencia] : URGENCIA_CORES.nenhum;
 
+  // Tarja esquerda: vencido/hoje grita em vermelho, amanhã em âmbar, resto recua.
+  const corBarra =
+    concluida
+      ? 'transparent'
+      : prazo?.urgencia === 'vencido' || prazo?.urgencia === 'hoje'
+      ? '#E04830'
+      : prazo?.urgencia === 'amanha'
+      ? '#E8A845'
+      : 'transparent';
+
   function toggleCheck() {
     if (!onToggleConcluido) return;
     Haptics.notificationAsync(
@@ -60,7 +70,11 @@ export function TaskCard({ tarefa, onPress, onLongPress, onToggleConcluido }: Pr
         }
       }}
       delayLongPress={100}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
+      style={({ pressed }) => [
+        styles.card,
+        { borderLeftColor: corBarra },
+        pressed && styles.pressed,
+      ]}>
       {/* Check button — tap toggle concluído */}
       <Pressable
         onPress={toggleCheck}
@@ -123,7 +137,8 @@ export function TaskCard({ tarefa, onPress, onLongPress, onToggleConcluido }: Pr
       </View>
 
       {tarefa.prioridade !== 'sem' && !concluida && (
-        <View style={[styles.prioPill, { backgroundColor: corPrioridade + '22' }]}>
+        <View style={styles.prioTag}>
+          <View style={[styles.prioDot, { backgroundColor: corPrioridade }]} />
           <ThemedText type="mono" style={[styles.prioText, { color: corPrioridade }]}>
             {PRIORIDADE_LABELS[tarefa.prioridade].toLowerCase()}
           </ThemedText>
@@ -142,6 +157,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     backgroundColor: 'rgba(245,241,237,0.04)',
     borderRadius: Radius.md,
+    borderLeftWidth: 3,
+    borderLeftColor: 'transparent',
   },
   pressed: { backgroundColor: 'rgba(245,241,237,0.07)' },
   check: {
@@ -161,12 +178,13 @@ const styles = StyleSheet.create({
   meta: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
   metaText: { fontSize: 11, letterSpacing: 0.2 },
   metaSep: { fontSize: 11, color: 'rgba(245,241,237,0.25)' },
-  prioPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: Radius.sm,
+  prioTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
     alignSelf: 'flex-start',
-    marginTop: 2,
+    marginTop: 3,
   },
+  prioDot: { width: 6, height: 6, borderRadius: 3 },
   prioText: { fontSize: 10, letterSpacing: 0.6, textTransform: 'lowercase' },
 });

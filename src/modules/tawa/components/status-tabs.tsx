@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.two,
-    paddingVertical: Spacing.two,
+    paddingVertical: 6,
     borderRadius: Radius.sm,
   },
   tabAtivo: {

@@ -26,6 +26,7 @@ import {
 } from '@expo-google-fonts/jetbrains-mono';
 
 import { queryClient } from '@/shared/query-client';
+import { registrarOpen } from '@/shared/tracking/registrar-open';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -64,7 +65,10 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (fontsLoaded) SplashScreen.hideAsync().catch(() => {});
+    if (fontsLoaded) {
+      SplashScreen.hideAsync().catch(() => {});
+      registrarOpen();
+    }
   }, [fontsLoaded]);
 
   if (!fontsLoaded) return null;
@@ -85,6 +89,12 @@ export default function RootLayout() {
             {/* Tarefas */}
             <Stack.Screen name="tarefa/nova" options={{ ...modalHeader, title: 'Nova tarefa' }} />
             <Stack.Screen name="tarefa/[id]" options={{ ...modalHeader, title: 'Editar tarefa' }} />
+
+            {/* Quick Capture via deep link: lifeos://quick-capture */}
+            <Stack.Screen
+              name="quick-capture"
+              options={{ ...modalHeader, title: 'Captura rápida', animation: 'fade' }}
+            />
 
             {/* Agenda global (filtrada por módulo via ?modulo=tawa) */}
             <Stack.Screen

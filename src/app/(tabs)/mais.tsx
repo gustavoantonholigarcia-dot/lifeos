@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Modules, Radius, Spacing, type ModuleKey } from '@/constants/theme';
+import { GATE_PASSOU } from '@/constants/gate';
 
 type Item = {
   key: ModuleKey;
@@ -49,7 +50,17 @@ export default function MaisScreen() {
           <ThemedText type="displayLG">Mais</ThemedText>
         </View>
 
-        {items.map((item) => {
+        {!GATE_PASSOU && (
+          <ThemedView type="backgroundElement" style={styles.lockedCard}>
+            <ThemedText type="default">Em breve</ThemedText>
+            <ThemedText type="small" themeColor="textMuted">
+              Treinos, UTFPR, RUAH, Projetos e Intercâmbio abrem depois que o
+              hábito de abrir o app se firmar. Um de cada vez.
+            </ThemedText>
+          </ThemedView>
+        )}
+
+        {GATE_PASSOU && items.map((item) => {
           const mod = Modules[item.key];
           const onPress = () => {
             if (item.href) router.push(item.href as any);
@@ -114,4 +125,5 @@ const styles = StyleSheet.create({
   },
   dot: { width: 14, height: 14, borderRadius: 7 },
   rowContent: { flex: 1, gap: 2 },
+  lockedCard: { padding: Spacing.three, borderRadius: Radius.md, gap: Spacing.one },
 });
