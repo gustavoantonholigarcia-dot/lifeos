@@ -134,6 +134,8 @@ export function useAtualizarContato() {
     onSuccess: (c) => {
       qc.invalidateQueries({ queryKey: crmKeys.contatos() });
       qc.invalidateQueries({ queryKey: crmKeys.contato(c.id) });
+      // Painel da ata mostra receptividade/status do contato — refletir na hora
+      qc.invalidateQueries({ queryKey: crmKeys.ataPaineis() });
     },
   });
 }

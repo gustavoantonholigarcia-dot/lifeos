@@ -245,14 +245,15 @@ function CompromissosSheet({
   const temVaga = vagas > 0;
 
   async function criarNaFila() {
-    if (!titulo.trim()) return;
+    if (!titulo.trim() || criar.isPending) return;
     await criar.mutateAsync({ titulo: titulo.trim(), status: 'fila' });
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setTitulo('');
   }
 
   async function criarAtivo() {
-    if (!titulo.trim() || !temVaga) return;
+    // isPending bloqueia toque duplo — senão furaria o limite de 3 ativos
+    if (!titulo.trim() || !temVaga || criar.isPending) return;
     await criar.mutateAsync({
       titulo: titulo.trim(),
       status: 'ativa',

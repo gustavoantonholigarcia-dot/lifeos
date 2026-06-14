@@ -177,8 +177,6 @@ export function provocacoesPara(tipo: TipoIdeia): Provoca[] {
   ];
 }
 
-/** @deprecated use provocacoesPara(tipo). Mantido pra compatibilidade. */
-export const PROVOCACOES = provocacoesPara('construir');
 
 /**
  * Score de validação 0–100 (heurística, sem IA).
@@ -453,6 +451,73 @@ export function useProvocacoes(ideiaId: string | null | undefined) {
       if (error) throw error;
       return (data ?? []) as Provocacao[];
     },
+  });
+}
+
+// ============================================================================
+// Insights da IA (Edge Function analisar-ideia → tabela ideia_insights)
+// ============================================================================
+export type TipoInsight = 'analise' | 'risco' | 'concorrencia' | 'proximo_passo';
+
+export interface Insight {
+  id: string;
+  ideia_id: string;
+  tipo: TipoInsight;
+  titulo: string | null;
+  conteudo: string;
+  fonte: 'manual' | 'ia';
+  created_at: string;
+}
+
+export const INSIGHT_LABELS: Record<TipoInsight, string> = {
+  analise: 'Análise',
+  risco: 'Risco',
+  concorrencia: 'Concorrência',
+  proximo_passo: 'Próximo passo',
+};
+
+export const INSIGHT_CORES: Record<TipoInsight, string> = {
+  analise: '#6B8FB8',
+  risco: '#C25B4E',
+  concorrencia: '#E8A845',
+  proximo_passo: '#8FA899',
+};
+
+export const insightKeys = {
+  byIdeia: (ideiaId: string) => ['ideia-insights', ideiaId] as const,
+};
+
+export function useInsights(ideiaId: string | null | undefined) {
+  return useQuery({
+    queryKey: insightKeys.byIdeia(ideiaId ?? 'none'),
+    enabled: !!ideiaId,
+    queryFn: async (): Promise<Insight[]> => {
+      if (!ideiaId) return [];
+      const supabase = requireSupabase();
+      const { data, error } = await supabase
+        .from('ideia_insights')
+        .select('id, ideia_id, tipo, titulo, conteudo, fonte, created_at')
+        .eq('ideia_id', ideiaId)
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as Insight[];
+    },
+  });
+}
+
+export function useAnalisarIdeia(ideiaId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const supabase = requireSupabase();
+      const { data, error } = await supabase.functions.invoke('analisar-ideia', {
+        body: { ideia_id: ideiaId },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      return data as { ok: boolean; count: number };
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: insightKeys.byIdeia(ideiaId) }),
   });
 }
 

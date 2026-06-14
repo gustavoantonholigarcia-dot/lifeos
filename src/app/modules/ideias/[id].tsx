@@ -7,6 +7,7 @@ import {
   Plus,
   Sparkles,
   Trash2,
+  Wand2,
 } from 'lucide-react-native';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -31,9 +32,13 @@ import {
   HIPOTESE_CORES,
   HIPOTESE_LABELS,
   HIPOTESE_STATUS,
+  INSIGHT_CORES,
+  INSIGHT_LABELS,
   TIPO_LABELS,
   calcularScore,
   camposCanvas,
+  useAnalisarIdeia,
+  useInsights,
   provocacoesPara,
   proximoExperimento,
   useAtualizarHipotese,
@@ -159,6 +164,9 @@ export default function IdeiaDetalhe() {
 
           {/* Score de validação */}
           {score && <ScoreCard score={score.score} faltando={score.faltando} />}
+
+          {/* Análise da IA (sócio crítico) */}
+          <InsightsSection ideiaId={ideia.id} />
 
           {/* Próximo passo sugerido (adapta ao tipo) */}
           <ProximoExperimento estagio={ideia.estagio} tipo={ideia.tipo} />
@@ -303,6 +311,81 @@ function TipoToggle({
         );
       })}
     </View>
+  );
+}
+
+// ============================================================================
+// Insights da IA — sócio crítico (Claude via Edge Function)
+// ============================================================================
+function InsightsSection({ ideiaId }: { ideiaId: string }) {
+  const { data: insights } = useInsights(ideiaId);
+  const analisar = useAnalisarIdeia(ideiaId);
+  const lista = insights ?? [];
+  const erro = analisar.error ? String((analisar.error as Error).message) : null;
+
+  return (
+    <ThemedView type="backgroundElement" style={[styles.expCard, { borderLeftColor: '#6B8FB8' }]}>
+      <View style={styles.insightHead}>
+        <View style={styles.expHead}>
+          <Wand2 size={14} color={'#6B8FB8' as any} />
+          <ThemedText type="meta" themeColor="textSecondary">
+            ANÁLISE DA IA
+          </ThemedText>
+        </View>
+        <Pressable
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            analisar.mutate();
+          }}
+          disabled={analisar.isPending}
+          hitSlop={6}
+          style={({ pressed }) => [
+            styles.analisarBtn,
+            pressed && { opacity: 0.7 },
+            analisar.isPending && { opacity: 0.5 },
+          ]}>
+          <ThemedText type="mono" style={styles.analisarBtnTexto}>
+            {analisar.isPending ? 'Pensando...' : lista.length > 0 ? 'Refazer' : 'Analisar'}
+          </ThemedText>
+        </Pressable>
+      </View>
+
+      {erro && (
+        <ThemedText type="small" style={{ color: '#C25B4E' }}>
+          {erro}
+        </ThemedText>
+      )}
+
+      {lista.length === 0 && !analisar.isPending && !erro && (
+        <ThemedText type="small" themeColor="textMuted">
+          Um sócio crítico analisa sua ideia: riscos, pontos cegos e o próximo passo.
+          Preencha o que puder e toque em Analisar.
+        </ThemedText>
+      )}
+
+      {lista.map((ins) => {
+        const cor = INSIGHT_CORES[ins.tipo] ?? '#6B8FB8';
+        return (
+          <View key={ins.id} style={styles.insightItem}>
+            <View style={styles.insightTopo}>
+              <View style={[styles.insightTag, { backgroundColor: cor + '22' }]}>
+                <ThemedText type="mono" style={[styles.insightTagTexto, { color: cor }]}>
+                  {INSIGHT_LABELS[ins.tipo] ?? ins.tipo}
+                </ThemedText>
+              </View>
+              {ins.titulo ? (
+                <ThemedText type="default" style={{ flex: 1, fontWeight: '600' }} numberOfLines={2}>
+                  {ins.titulo}
+                </ThemedText>
+              ) : null}
+            </View>
+            <ThemedText type="small" themeColor="textSecondary" style={{ lineHeight: 19 }}>
+              {ins.conteudo}
+            </ThemedText>
+          </View>
+        );
+      })}
+    </ThemedView>
   );
 }
 
@@ -744,6 +827,27 @@ const styles = StyleSheet.create({
   // Próximo experimento
   expCard: { padding: Spacing.three, borderRadius: Radius.lg, gap: 6, borderLeftWidth: 2 },
   expHead: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+
+  // Insights da IA
+  insightHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  analisarBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: '#6B8FB8' + '66',
+    backgroundColor: '#6B8FB8' + '14',
+  },
+  analisarBtnTexto: { fontSize: 11, color: '#6B8FB8', letterSpacing: 0.3 },
+  insightItem: {
+    gap: 4,
+    paddingTop: Spacing.two,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(245,241,237,0.08)',
+  },
+  insightTopo: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  insightTag: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: Radius.sm },
+  insightTagTexto: { fontSize: 9, letterSpacing: 0.4 },
 
   // Provocações
   provBox: { padding: Spacing.three, borderRadius: Radius.lg, gap: Spacing.two },
