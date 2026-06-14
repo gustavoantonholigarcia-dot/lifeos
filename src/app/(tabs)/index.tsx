@@ -4,10 +4,12 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fab } from '@/components/fab';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Modules, Radius, Spacing, type ModuleKey } from '@/constants/theme';
-import { FocoDiaSection } from '@/shared/foco-dia/FocoDiaSection';
+import { CompromissosSection } from '@/shared/compromissos/CompromissosSection';
+import { VenceHojeSection } from '@/shared/vence-hoje/VenceHojeSection';
 import { QuickCaptureSheet } from '@/shared/quick-capture/QuickCaptureSheet';
 import { ResumoCards, ResumoLocalCard } from '@/shared/resumo/ResumoCard';
 import { GateTracker } from '@/shared/tracking/GateTracker';
@@ -67,13 +69,16 @@ export default function HojeScreen() {
           <ResumoLocalCard />
           <ResumoCards />
 
-          {/* Foco do dia */}
-          <FocoDiaSection />
+          {/* Norte → compromissos (máx 3) → constância diária */}
+          <CompromissosSection />
+
+          {/* Vence hoje — automático, sem curadoria manual */}
+          <VenceHojeSection />
 
           {/* Cards por módulo */}
           <View style={styles.section}>
             <ThemedText type="meta" themeColor="textSecondary" style={styles.sectionLabel}>
-              02 · Por área
+              03 · Por área
             </ThemedText>
             <View style={styles.grid}>
               {MODULOS_CARD.map((item, i) => {
@@ -102,11 +107,9 @@ export default function HojeScreen() {
         </ScrollView>
 
         {/* FAB Quick Capture */}
-        <Pressable
-          onPress={() => setQuickOpen(true)}
-          style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
+        <Fab onPress={() => setQuickOpen(true)} style={{ bottom: 100 }}>
           <Ambulance color={'#1C1917' as any} size={22} />
-        </Pressable>
+        </Fab>
 
         <QuickCaptureSheet visible={quickOpen} onClose={() => setQuickOpen(false)} />
       </SafeAreaView>
@@ -172,21 +175,5 @@ const styles = StyleSheet.create({
     right: 12,
     fontSize: 10,
     opacity: 0.4,
-  },
-  fab: {
-    position: 'absolute',
-    right: Spacing.three,
-    bottom: 100,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#E8B4A0', // peach (gradient não dá nativo, single color)
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#E8B4A0',
-    shadowOpacity: 0.45,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
   },
 });

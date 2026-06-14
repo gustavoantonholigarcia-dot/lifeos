@@ -12,12 +12,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fab } from '@/components/fab';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Modules, Radius, Spacing, Warm } from '@/constants/theme';
 import { formatarDataCurta } from '@/shared/format/date';
-import { useContatos, useCriarContato } from '@/modules/tawa/crm/queries';
-import { corAvatar, iniciais, rotuloFrieza } from '@/modules/tawa/crm/helpers';
+import { useAtas, useContatos, useCriarContato } from '@/modules/tawa/crm/queries';
+import { corAvatar, formatarReaisCompacto, iniciais, rotuloFrieza } from '@/modules/tawa/crm/helpers';
 import {
   STATUS_CORES,
   STATUS_LABELS,
@@ -42,6 +43,7 @@ function hojeISO(): string {
 
 export default function ContatosScreen() {
   const { data: contatos, isLoading } = useContatos();
+  const { data: atas } = useAtas();
   const [formOpen, setFormOpen] = useState(false);
   const [busca, setBusca] = useState('');
   const [statusFiltro, setStatusFiltro] = useState<ContatoStatus | null>(null);
@@ -75,6 +77,18 @@ export default function ContatosScreen() {
     return c;
   }, [contatos]);
 
+  // Valor em negociação (aberto) vs ganho — estilo Moskit
+  const valores = useMemo(() => {
+    let aberto = 0;
+    let ganho = 0;
+    for (const ct of contatos ?? []) {
+      const v = ct.valor_estimado ?? 0;
+      if (ct.status === 'ganho') ganho += v;
+      else if (ct.status !== 'perdido') aberto += v;
+    }
+    return { aberto, ganho };
+  }, [contatos]);
+
   const temContatos = (contatos?.length ?? 0) > 0;
   const temFiltro = busca.trim().length > 0 || statusFiltro != null;
 
@@ -92,6 +106,22 @@ export default function ContatosScreen() {
               : `${contatos?.length ?? 0} ${(contatos?.length ?? 0) === 1 ? 'contato' : 'contatos'}`}
           </ThemedText>
         </View>
+
+        {/* Atas de registro — acesso ao painel de farming */}
+        {(atas?.length ?? 0) > 0 && (
+          <View style={styles.atasRow}>
+            {atas!.map((a) => (
+              <Pressable
+                key={a.id}
+                onPress={() => router.push(`/modules/tawa/atas/${a.id}` as any)}
+                style={({ pressed }) => [styles.ataChip, pressed && { opacity: 0.6 }]}>
+                <ThemedText type="mono" style={styles.ataChipText}>
+                  Ata {a.nome} →
+                </ThemedText>
+              </Pressable>
+            ))}
+          </View>
+        )}
 
         {temContatos && (
           <View style={styles.controls}>
@@ -132,6 +162,19 @@ export default function ContatosScreen() {
                 );
               })}
             </View>
+
+            {(valores.aberto > 0 || valores.ganho > 0) && (
+              <View style={styles.valoresRow}>
+                <ThemedText type="mono" style={styles.valorAberto}>
+                  {formatarReaisCompacto(valores.aberto)} em negociação
+                </ThemedText>
+                {valores.ganho > 0 && (
+                  <ThemedText type="mono" style={styles.valorGanho}>
+                    {formatarReaisCompacto(valores.ganho)} ganho
+                  </ThemedText>
+                )}
+              </View>
+            )}
 
             <ScrollView
               horizontal
@@ -247,6 +290,11 @@ export default function ContatosScreen() {
                           {STATUS_LABELS[c.status]}
                         </ThemedText>
                       </View>
+                      {c.valor_estimado ? (
+                        <ThemedText type="mono" style={styles.cardValor}>
+                          {formatarReaisCompacto(c.valor_estimado)}
+                        </ThemedText>
+                      ) : null}
                       {(() => {
                         const f = rotuloFrieza(c.updated_at);
                         if (!f || f.texto === 'hoje') return null;
@@ -285,11 +333,9 @@ export default function ContatosScreen() {
           })}
         </ScrollView>
 
-        <Pressable
-          onPress={() => setFormOpen(true)}
-          style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
+        <Fab onPress={() => setFormOpen(true)} style={{ bottom: 100 }}>
           <Plus color={'#1C1917' as any} size={26} />
-        </Pressable>
+        </Fab>
 
         {formOpen && <NovoContatoSheet onClose={() => setFormOpen(false)} />}
       </SafeAreaView>
@@ -328,7 +374,12 @@ function NovoContatoSheet({ onClose }: { onClose: () => void }) {
             <X size={22} color={'rgba(245,241,237,0.65)' as any} />
           </Pressable>
         </View>
-        <ScrollView contentContainerStyle={sheet.body}>
+        <ScrollView
+          contentContainerStyle={sheet.body}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets
+          showsVerticalScrollIndicator={false}>
           <TextInput value={nome} onChangeText={setNome} placeholder="Nome (ex: Prefeitura de Londrina)" placeholderTextColor="rgba(245,241,237,0.25)" style={sheet.input} />
 
           <ThemedText type="meta" style={sheet.label}>Tipo</ThemedText>
@@ -371,6 +422,16 @@ const styles = StyleSheet.create({
   safe: { flex: 1 },
   header: { paddingHorizontal: Spacing.three, paddingTop: Spacing.two, gap: 2 },
   controls: { paddingHorizontal: Spacing.three, paddingTop: Spacing.two, gap: Spacing.two },
+  atasRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, paddingHorizontal: Spacing.three, paddingTop: Spacing.two },
+  ataChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Modules.tawa.accent + '55',
+    backgroundColor: Modules.tawa.accent + '14',
+  },
+  ataChipText: { fontSize: 11, color: Modules.tawa.accent, letterSpacing: 0.3 },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -400,6 +461,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(245,241,237,0.06)',
     gap: 1,
   },
+  valoresRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two, flexWrap: 'wrap' },
+  valorAberto: { fontSize: 12, color: 'rgba(245,241,237,0.70)', fontWeight: '600' },
+  valorGanho: { fontSize: 12, color: '#8FA899', fontWeight: '600' },
   avatar: {
     width: 38, height: 38, borderRadius: 19,
     alignItems: 'center', justifyContent: 'center',
@@ -407,6 +471,7 @@ const styles = StyleSheet.create({
   },
   avatarText: { fontSize: 13, fontWeight: '600' },
   frieza: { fontSize: 10, color: 'rgba(245,241,237,0.40)' },
+  cardValor: { fontSize: 11, color: '#8FA899', fontWeight: '600' },
   scroll: { padding: Spacing.three, gap: Spacing.two, paddingBottom: 140 },
   empty: { padding: Spacing.three, borderRadius: Radius.lg },
   painel: { padding: Spacing.three, borderRadius: Radius.lg, gap: Spacing.two, borderLeftWidth: 3, borderLeftColor: '#E04830' },
@@ -423,11 +488,6 @@ const styles = StyleSheet.create({
   followRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   followDot: { width: 6, height: 6, borderRadius: 3 },
   followText: { flex: 1, color: 'rgba(245,241,237,0.55)' },
-  fab: {
-    position: 'absolute', right: Spacing.three, bottom: 100, width: 56, height: 56, borderRadius: 28,
-    backgroundColor: Warm.peach, alignItems: 'center', justifyContent: 'center',
-    shadowColor: Warm.peach, shadowOpacity: 0.45, shadowRadius: 20, shadowOffset: { width: 0, height: 8 }, elevation: 8,
-  },
 });
 
 const sheet = StyleSheet.create({

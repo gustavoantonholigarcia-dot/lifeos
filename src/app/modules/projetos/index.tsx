@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fab } from '@/components/fab';
 import { ModuleHeader } from '@/components/module-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -121,11 +122,9 @@ export default function ProjetosScreen() {
           })}
         </ScrollView>
 
-        <Pressable
-          onPress={() => setFormOpen(true)}
-          style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
+        <Fab onPress={() => setFormOpen(true)} style={{ bottom: 100 }}>
           <Plus color={'#1C1917' as any} size={22} />
-        </Pressable>
+        </Fab>
 
         {formOpen && <NovoProjetoSheet onClose={() => setFormOpen(false)} />}
       </SafeAreaView>
@@ -161,7 +160,12 @@ function NovoProjetoSheet({ onClose }: { onClose: () => void }) {
             <X size={22} color={'rgba(245,241,237,0.65)' as any} />
           </Pressable>
         </View>
-        <View style={sheetStyles.body}>
+        <ScrollView
+          contentContainerStyle={sheetStyles.body}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets
+          showsVerticalScrollIndicator={false}>
           <TextInput value={nome} onChangeText={setNome} placeholder="Nome do projeto" placeholderTextColor="rgba(245,241,237,0.25)" style={sheetStyles.input} />
           <TextInput value={descricao} onChangeText={setDescricao} placeholder="Descrição" placeholderTextColor="rgba(245,241,237,0.25)" multiline style={[sheetStyles.input, { minHeight: 80 }]} />
           <TextInput value={stack} onChangeText={setStack} placeholder="Tech stack (separado por vírgula)" placeholderTextColor="rgba(245,241,237,0.25)" style={sheetStyles.input} />
@@ -169,7 +173,7 @@ function NovoProjetoSheet({ onClose }: { onClose: () => void }) {
           <Pressable onPress={salvar} disabled={!nome.trim()} style={({ pressed }) => [sheetStyles.salvarBtn, pressed && { opacity: 0.85 }, !nome.trim() && { opacity: 0.4 }]}>
             <ThemedText type="default" style={{ color: '#1C1917', fontWeight: '600' }}>Criar</ThemedText>
           </Pressable>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -189,11 +193,6 @@ const styles = StyleSheet.create({
   progressFill: { height: '100%', borderRadius: 2 },
   projetoMeta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   metaText: { fontSize: 11, color: 'rgba(245,241,237,0.45)' },
-  fab: {
-    position: 'absolute', right: Spacing.three, bottom: 100, width: 56, height: 56, borderRadius: 28,
-    backgroundColor: Warm.peach, alignItems: 'center', justifyContent: 'center',
-    shadowColor: Warm.peach, shadowOpacity: 0.45, shadowRadius: 20, shadowOffset: { width: 0, height: 8 }, elevation: 8,
-  },
 });
 
 const sheetStyles = StyleSheet.create({

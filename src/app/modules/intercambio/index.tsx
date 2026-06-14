@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fab } from '@/components/fab';
 import { ModuleHeader } from '@/components/module-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -102,11 +103,9 @@ export default function IntercambioScreen() {
           ))}
         </ScrollView>
 
-        <Pressable
-          onPress={() => setFormOpen(true)}
-          style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
+        <Fab onPress={() => setFormOpen(true)} style={{ bottom: 100 }}>
           <Plus color={'#1C1917' as any} size={22} />
-        </Pressable>
+        </Fab>
 
         {formOpen && <NovoItemSheet onClose={() => setFormOpen(false)} />}
       </SafeAreaView>
@@ -136,7 +135,12 @@ function NovoItemSheet({ onClose }: { onClose: () => void }) {
             <X size={22} color={'rgba(245,241,237,0.65)' as any} />
           </Pressable>
         </View>
-        <View style={sheetStyles.body}>
+        <ScrollView
+          contentContainerStyle={sheetStyles.body}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets
+          showsVerticalScrollIndicator={false}>
           <ThemedText type="meta" style={sheetStyles.label}>Categoria</ThemedText>
           <View style={sheetStyles.cats}>
             {CATEGORIAS.map((c) => {
@@ -161,7 +165,7 @@ function NovoItemSheet({ onClose }: { onClose: () => void }) {
           <Pressable onPress={salvar} disabled={!item.trim()} style={({ pressed }) => [sheetStyles.salvarBtn, pressed && { opacity: 0.85 }, !item.trim() && { opacity: 0.4 }]}>
             <ThemedText type="default" style={{ color: '#1C1917', fontWeight: '600' }}>Adicionar</ThemedText>
           </Pressable>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -185,11 +189,6 @@ const styles = StyleSheet.create({
   },
   check: { width: 22, height: 22, borderRadius: 11, borderWidth: 1.5, borderColor: 'rgba(245,241,237,0.30)', alignItems: 'center', justifyContent: 'center' },
   textDone: { color: 'rgba(245,241,237,0.40)', textDecorationLine: 'line-through' },
-  fab: {
-    position: 'absolute', right: Spacing.three, bottom: 100, width: 56, height: 56, borderRadius: 28,
-    backgroundColor: Warm.peach, alignItems: 'center', justifyContent: 'center',
-    shadowColor: Warm.peach, shadowOpacity: 0.45, shadowRadius: 20, shadowOffset: { width: 0, height: 8 }, elevation: 8,
-  },
 });
 
 const sheetStyles = StyleSheet.create({

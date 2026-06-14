@@ -32,9 +32,26 @@ export interface Contato {
   observacoes: string | null;
   proximo_passo: string | null;
   proximo_passo_em: string | null;
+  valor_estimado: number | null;
+  motivo_perda: string | null;
   setor_id: string | null;
+  /** Quão solícito/agradável é lidar com o contato: 0 (rude) a 10 (gente boa). */
+  receptividade: number | null;
   created_at: string;
   updated_at: string;
+}
+
+/** Cor da nota de receptividade: vermelho (baixa) → âmbar → sage (alta). */
+export function corReceptividade(nota: number): string {
+  if (nota <= 3) return '#C25B4E'; // difícil
+  if (nota <= 6) return '#E8A845'; // neutro
+  return '#8FA899'; // gente boa
+}
+
+export function rotuloReceptividade(nota: number): string {
+  if (nota <= 3) return 'Difícil';
+  if (nota <= 6) return 'Neutro';
+  return 'Gente boa';
 }
 
 export interface Interacao {
@@ -46,6 +63,111 @@ export interface Interacao {
   conteudo: string;
   created_at: string;
 }
+
+/** Pessoa de contato dentro de um cliente (ex: secretário de saúde). */
+export interface ContatoPessoa {
+  id: string;
+  user_id: string;
+  contato_id: string;
+  nome: string;
+  cargo: string | null;
+  telefone: string | null;
+  email: string | null;
+  observacao: string | null;
+  ordem: number;
+  created_at: string;
+}
+
+export interface CriarPessoaInput {
+  contato_id: string;
+  nome: string;
+  cargo?: string;
+  telefone?: string;
+  email?: string;
+  observacao?: string;
+}
+
+// ----------------------------------------------------------------------------
+// Atas de registro de preços / empenhos
+// ----------------------------------------------------------------------------
+export type EmpenhoStatus = 'pendente' | 'em_conversa' | 'empenhado';
+
+export interface Ata {
+  id: string;
+  user_id: string;
+  nome: string;
+  descricao: string | null;
+  created_at: string;
+}
+
+export interface AtaLote {
+  id: string;
+  user_id: string;
+  ata_id: string;
+  numero: string | null;
+  veiculo: string;
+  edital_ref: string | null;
+  valor_unitario: number | null;
+  ordem: number;
+  created_at: string;
+}
+
+export interface Empenho {
+  id: string;
+  user_id: string;
+  contato_id: string;
+  lote_id: string;
+  status: EmpenhoStatus;
+  data_empenho: string | null;
+  valor: number | null;
+  observacao: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Lote + o empenho da cidade atual (null = pendente, sem linha ainda). */
+export interface LoteComEmpenho {
+  lote: AtaLote;
+  empenho: Empenho | null;
+}
+
+/** Ata participada por um contato, com seus lotes e status de empenho. */
+export interface AtaDoContato {
+  ata: Ata;
+  lotes: LoteComEmpenho[];
+}
+
+/** Linha do painel da ata: uma cidade participante + empenho por lote. */
+export interface ParticipanteDaAta {
+  contato: Pick<Contato, 'id' | 'nome' | 'receptividade' | 'status' | 'telefone'>;
+  /** lote_id -> empenho (ausente = pendente, sem linha ainda) */
+  empenhos: Record<string, Empenho>;
+}
+
+/** Visão completa da ata: municípios × lotes, pro painel de farming. */
+export interface AtaPainel {
+  ata: Ata;
+  lotes: AtaLote[];
+  participantes: ParticipanteDaAta[];
+}
+
+export const EMPENHO_STATUS_LABELS: Record<EmpenhoStatus, string> = {
+  pendente: 'Pendente',
+  em_conversa: 'Em conversa',
+  empenhado: 'Empenhado',
+};
+
+export const EMPENHO_STATUS_CORES: Record<EmpenhoStatus, string> = {
+  pendente: 'rgba(245,241,237,0.40)',
+  em_conversa: '#6B8FB8',
+  empenhado: '#8FA899',
+};
+
+export const EMPENHO_STATUS_SEQUENCE: EmpenhoStatus[] = [
+  'pendente',
+  'em_conversa',
+  'empenhado',
+];
 
 export const TIPO_LABELS: Record<ContatoTipo, string> = {
   prefeitura: 'Prefeitura',
@@ -110,5 +232,6 @@ export interface CriarContatoInput {
   observacoes?: string;
   proximo_passo?: string;
   proximo_passo_em?: string;
+  valor_estimado?: number;
   setor_id?: string;
 }

@@ -40,6 +40,31 @@ export function linkWhatsApp(telefone: string | null): string | null {
   return `https://wa.me/${digits}`;
 }
 
+/** Formata um valor numérico em reais: 12500 → "R$ 12.500". Null/0 → "". */
+export function formatarReais(valor: number | null | undefined): string {
+  if (valor == null || valor === 0) return '';
+  return 'R$ ' + valor.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+}
+
+/** Versão compacta pra cabeçalhos: 1.500.000 → "R$ 1,5 mi". */
+export function formatarReaisCompacto(valor: number | null | undefined): string {
+  if (valor == null || valor === 0) return 'R$ 0';
+  if (valor >= 1_000_000) return `R$ ${(valor / 1_000_000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} mi`;
+  if (valor >= 1_000) return `R$ ${(valor / 1_000).toLocaleString('pt-BR', { maximumFractionDigits: 0 })} mil`;
+  return 'R$ ' + valor.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+}
+
+/** Extrai número de um texto de moeda digitado: "R$ 12.500,00" → 12500. */
+export function parsearReais(texto: string): number | null {
+  if (!texto.trim()) return null;
+  // remove tudo que não é dígito, vírgula ou ponto
+  let limpo = texto.replace(/[^\d.,]/g, '');
+  // trata padrão BR: ponto = milhar, vírgula = decimal
+  limpo = limpo.replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(limpo);
+  return isNaN(n) ? null : n;
+}
+
 /** Dias decorridos desde uma data ISO (ou null). */
 export function diasDesde(iso: string | null): number | null {
   if (!iso) return null;

@@ -94,6 +94,11 @@ export const Modules = {
     accent: '#B89FD9',          // dusty lavender
     label: 'Estudos',
   },
+  ideias: {
+    primary: '#C97064',
+    accent: '#E0917F',          // terracotta clara · faísca
+    label: 'Ideias',
+  },
 } as const;
 
 export type ModuleKey = keyof typeof Modules;
@@ -162,6 +167,32 @@ export const Radius = {
 } as const;
 
 // ============================================================
+// Sombra / elevação — a "lamp halo" (do design system)
+// RN não tem spread; aproximamos com radius/opacity.
+// ============================================================
+export const Shadow = {
+  // Halo quente do FAB (peach). Único elemento com sombra colorida.
+  fab: {
+    shadowColor: '#E8B4A0',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    elevation: 8,
+  },
+  // Sombra de sheet/overlay subindo de baixo.
+  sheet: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: -12 },
+    shadowOpacity: 0.55,
+    shadowRadius: 24,
+    elevation: 16,
+  },
+} as const;
+
+// Gradiente do FAB (peach → honey, 135deg) — o único gradiente do app.
+export const FabGradient = ['#E8B4A0', '#D4A574'] as const;
+
+// ============================================================
 // Motion
 // ============================================================
 export const Motion = {
@@ -169,6 +200,8 @@ export const Motion = {
   durFast: 180,
   durMed: 240,
   durSlow: 320,
+  // easing cubic-bezier(.2,.8,.2,1) → fade+rise, press encolhe, sem bounce
+  ease: { x1: 0.2, y1: 0.8, x2: 0.2, y2: 1 },
 } as const;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;

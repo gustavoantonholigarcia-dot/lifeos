@@ -40,6 +40,7 @@ export const AGENDA_MODULOS_ORDEM: AnotacaoModulo[] = [
   'estudos',
   'projetos',
   'intercambio',
+  'ideias',
   'geral',
 ];
 
@@ -51,5 +52,6 @@ export const AGENDA_MODULO_LABELS: Record<AnotacaoModulo, string> = {
   estudos: 'Estudos',
   projetos: 'Projetos',
   intercambio: 'Intercâmbio',
+  ideias: 'Ideias',
   geral: 'Geral',
 };

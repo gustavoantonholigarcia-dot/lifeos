@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fab } from '@/components/fab';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Modules, Radius, Spacing } from '@/constants/theme';
@@ -213,15 +214,9 @@ export default function AgendaScreen() {
         </ScrollView>
 
         {/* FAB com cor do filtro */}
-        <Pressable
-          onPress={() => setOpenForm(true)}
-          style={({ pressed }) => [
-            styles.fab,
-            { backgroundColor: corFAB, shadowColor: corFAB },
-            pressed && { opacity: 0.85 },
-          ]}>
+        <Fab onPress={() => setOpenForm(true)} color={corFAB}>
           <Plus color={'#1C1917' as any} size={26} />
-        </Pressable>
+        </Fab>
 
         <NovaAnotacaoModal
           visible={openForm}
@@ -573,20 +568,6 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm,
   },
   anotTagDot: { width: 5, height: 5, borderRadius: 2.5 },
-  fab: {
-    position: 'absolute',
-    right: Spacing.three,
-    bottom: Spacing.three,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowOpacity: 0.45,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
-  },
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',

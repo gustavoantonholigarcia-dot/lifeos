@@ -123,6 +123,7 @@ export function useCriarTarefa() {
     },
     onSuccess: async (tarefa) => {
       qc.invalidateQueries({ queryKey: tawaKeys.tarefas() });
+      qc.invalidateQueries({ queryKey: ['vence-hoje'] });
       // Agenda notificações se tem prazo
       await agendarSeNecessario(tarefa).catch(() => {});
     },
@@ -152,6 +153,8 @@ export function useAtualizarTarefa() {
     onSuccess: async (tarefa) => {
       qc.invalidateQueries({ queryKey: tawaKeys.tarefa(tarefa.id) });
       qc.invalidateQueries({ queryKey: tawaKeys.tarefas() });
+      // Literal pra evitar import circular com shared/vence-hoje
+      qc.invalidateQueries({ queryKey: ['vence-hoje'] });
       // Re-agenda notificações (cancela antigas e cria novas)
       // Se tarefa foi concluída ou perdeu prazo, só cancela
       if (tarefa.status === 'concluido' || !tarefa.prazo_em) {
@@ -183,6 +186,7 @@ export function useDeletarTarefa() {
     },
     onSuccess: async (id) => {
       qc.invalidateQueries({ queryKey: tawaKeys.tarefas() });
+      qc.invalidateQueries({ queryKey: ['vence-hoje'] });
       await cancelarNotificacoesTarefa(id).catch(() => {});
     },
   });

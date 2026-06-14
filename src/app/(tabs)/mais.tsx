@@ -50,6 +50,8 @@ export default function MaisScreen() {
           <ThemedText type="displayLG">Mais</ThemedText>
         </View>
 
+        {/* Ideias agora vive na barra central (tab própria). */}
+
         {!GATE_PASSOU && (
           <ThemedView type="backgroundElement" style={styles.lockedCard}>
             <ThemedText type="default">Em breve</ThemedText>

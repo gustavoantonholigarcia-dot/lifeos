@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react-native';
 import { FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fab } from '@/components/fab';
 import { ModuleHeader } from '@/components/module-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -45,11 +46,9 @@ export default function EstudosScreen() {
           }
         />
 
-        <Pressable
-          onPress={() => router.push('/modules/estudos/novo')}
-          style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
+        <Fab onPress={() => router.push('/modules/estudos/novo')} style={{ bottom: 100 }}>
           <Plus color={'#1C1917' as any} size={26} />
-        </Pressable>
+        </Fab>
       </SafeAreaView>
     </ThemedView>
   );
@@ -166,20 +165,4 @@ const styles = StyleSheet.create({
   },
   stat: { gap: 2 },
   empty: { paddingTop: Spacing.six, alignItems: 'center' },
-  fab: {
-    position: 'absolute',
-    right: Spacing.three,
-    bottom: 100,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Warm.peach,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: Warm.peach,
-    shadowOpacity: 0.45,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
-  },
 });

@@ -3,6 +3,7 @@ import { Plus, Trash2 } from 'lucide-react-native';
 import { Alert, FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fab } from '@/components/fab';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Radius, Spacing } from '@/constants/theme';
@@ -200,15 +201,11 @@ export default function DetalheIdiomaScreen() {
           }
         />
 
-        <Pressable
+        <Fab
           onPress={() => router.push(`/modules/estudos/${id}/sessao-nova`)}
-          style={({ pressed }) => [
-            styles.fab,
-            { backgroundColor: idioma.cor },
-            pressed && { opacity: 0.85 },
-          ]}>
+          color={idioma.cor}>
           <Plus color={'white' as any} size={26} />
-        </Pressable>
+        </Fab>
       </SafeAreaView>
     </ThemedView>
   );
@@ -301,19 +298,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   empty: { paddingTop: Spacing.four, alignItems: 'center' },
-  fab: {
-    position: 'absolute',
-    right: Spacing.three,
-    bottom: Spacing.three,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
-  },
 });

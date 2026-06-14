@@ -52,8 +52,8 @@ export async function pedirPermissoes(): Promise<boolean> {
 const ID_LEMBRETE_FOCO = 'lembrete-foco-diario';
 
 /**
- * Agenda um lembrete local diário às 7h: "Qual o foco de hoje?".
- * Notificação LOCAL (funciona no Expo Go, não depende de push remoto).
+ * Agenda um lembrete local diário às 7h apontando pra cadeia da tela Hoje
+ * (compromissos + vence hoje). Notificação LOCAL (funciona no Expo Go).
  * Idempotente: cancela o anterior antes de reagendar, então pode chamar
  * a cada startup sem duplicar.
  */
@@ -70,7 +70,7 @@ export async function agendarLembreteDiarioFoco(): Promise<void> {
       identifier: ID_LEMBRETE_FOCO,
       content: {
         title: 'Bom dia',
-        body: 'Qual o foco de hoje?',
+        body: 'O que precisa acontecer hoje? Compromissos e prazos te esperam.',
         data: { tipo: 'lembrete_foco' },
       },
       trigger: {
@@ -81,6 +81,89 @@ export async function agendarLembreteDiarioFoco(): Promise<void> {
     });
   } catch (e) {
     console.warn('[notif] falha ao agendar lembrete de foco', e);
+  }
+}
+
+// ============================================================================
+// Lembrete de próximo passo do CRM (follow-up por contato)
+// ============================================================================
+/**
+ * Agenda um lembrete local pro próximo passo de um contato, às 9h do dia
+ * em `proximo_passo_em`. Idempotente: cancela o anterior do mesmo contato.
+ * Se a data já passou, não agenda (o painel "Retomar hoje" cobre os vencidos).
+ */
+export async function agendarLembreteFollowup(input: {
+  contato_id: string;
+  nome: string;
+  proximo_passo: string;
+  proximo_passo_em: string; // ISO date (YYYY-MM-DD)
+  user_id: string;
+}): Promise<void> {
+  if (!supabase) return;
+  await cancelarLembreteFollowup(input.contato_id, input.user_id);
+
+  const ok = await pedirPermissoes();
+  if (!ok) return;
+
+  // 9h local do dia do follow-up
+  const [y, m, d] = input.proximo_passo_em.slice(0, 10).split('-').map(Number);
+  if (!y || !m || !d) return;
+  const data = new Date(y, m - 1, d, 9, 0, 0);
+  if (data <= new Date()) return;
+
+  try {
+    const id = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: input.nome,
+        body: `Próximo passo: ${input.proximo_passo}`,
+        data: { tipo: 'followup_crm', contato_id: input.contato_id },
+        sound: true,
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+        date: data,
+      },
+    });
+
+    await supabase.from('notificacoes_agendadas').insert({
+      user_id: input.user_id,
+      referencia_id: input.contato_id,
+      referencia_tipo: 'contato_followup',
+      disparar_em: data.toISOString(),
+      mensagem: input.proximo_passo,
+      identificador_local: id,
+      enviada: false,
+    });
+  } catch (e) {
+    console.warn('[notif] falha ao agendar follow-up', e);
+  }
+}
+
+/** Cancela o lembrete de follow-up de um contato (se houver). */
+export async function cancelarLembreteFollowup(
+  contato_id: string,
+  user_id?: string,
+): Promise<void> {
+  if (!supabase) return;
+  let query = supabase
+    .from('notificacoes_agendadas')
+    .select('id, identificador_local')
+    .eq('referencia_id', contato_id)
+    .eq('referencia_tipo', 'contato_followup')
+    .eq('enviada', false);
+  if (user_id) query = query.eq('user_id', user_id);
+
+  const { data, error } = await query;
+  if (error) return;
+
+  for (const row of data ?? []) {
+    if (row.identificador_local) {
+      await Notifications.cancelScheduledNotificationAsync(row.identificador_local).catch(() => {});
+    }
+  }
+  const ids = (data ?? []).map((r) => r.id);
+  if (ids.length > 0) {
+    await supabase.from('notificacoes_agendadas').delete().in('id', ids);
   }
 }
 

@@ -9,6 +9,7 @@ export default function AppTabs() {
   return (
     <NativeTabs
       backgroundColor={colors.background}
+      disableTransparentOnScrollEdge
       indicatorColor={colors.backgroundElement}
       tintColor={Warm.honey}
       iconColor={{ default: colors.textMuted, selected: Warm.honey }}
@@ -27,6 +28,12 @@ export default function AppTabs() {
       <NativeTabs.Trigger name="utfpr">
         <Label>UTFPR</Label>
         <Icon sf={{ default: 'graduationcap', selected: 'graduationcap.fill' }} />
+      </NativeTabs.Trigger>
+
+      {/* Ideias (startups): sempre visível — captura/validação não é gated */}
+      <NativeTabs.Trigger name="ideias">
+        <Label>Ideias</Label>
+        <Icon sf={{ default: 'lightbulb', selected: 'lightbulb.fill' }} />
       </NativeTabs.Trigger>
 
       {/* Treinos: oculto até passar no GATE (ver constants/gate.ts) */}

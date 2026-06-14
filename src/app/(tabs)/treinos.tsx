@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fab } from '@/components/fab';
 import { ModuleHeader } from '@/components/module-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -184,11 +185,9 @@ export default function TreinosScreen() {
         </ScrollView>
 
         {/* FAB */}
-        <Pressable
-          onPress={() => setFormOpen(true)}
-          style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
+        <Fab onPress={() => setFormOpen(true)} style={{ bottom: 100 }}>
           <Plus color={'#1C1917' as any} size={22} />
-        </Pressable>
+        </Fab>
 
         <NovaSessaoSheet visible={formOpen} onClose={() => setFormOpen(false)} />
       </SafeAreaView>
@@ -231,7 +230,12 @@ function NovaSessaoSheet({ visible, onClose }: { visible: boolean; onClose: () =
           </Pressable>
         </View>
 
-        <View style={sheetStyles.body}>
+        <ScrollView
+          contentContainerStyle={sheetStyles.body}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets
+          showsVerticalScrollIndicator={false}>
           <ThemedText type="meta" style={sheetStyles.label}>
             Modalidade
           </ThemedText>
@@ -287,7 +291,7 @@ function NovaSessaoSheet({ visible, onClose }: { visible: boolean; onClose: () =
               {criar.isPending ? 'Salvando...' : 'Registrar'}
             </ThemedText>
           </Pressable>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -339,22 +343,6 @@ const styles = StyleSheet.create({
   metaText: { fontSize: 11, color: 'rgba(245,241,237,0.45)' },
   titleDone: { color: 'rgba(245,241,237,0.40)', textDecorationLine: 'line-through' },
   accentDot: { width: 6, height: 6, borderRadius: 3 },
-  fab: {
-    position: 'absolute',
-    right: Spacing.three,
-    bottom: 100,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Warm.peach,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: Warm.peach,
-    shadowOpacity: 0.45,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
-  },
 });
 
 const sheetStyles = StyleSheet.create({
@@ -368,7 +356,7 @@ const sheetStyles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(245,241,237,0.08)',
   },
-  body: { padding: Spacing.three, gap: Spacing.three },
+  body: { padding: Spacing.three, gap: Spacing.three, paddingBottom: Spacing.five },
   label: { color: 'rgba(245,241,237,0.55)', textTransform: 'uppercase', letterSpacing: 0.6 },
   modalidades: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
   modBtn: {

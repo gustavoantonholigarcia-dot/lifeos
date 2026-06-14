@@ -6,6 +6,7 @@ import { FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-nat
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fab } from '@/components/fab';
 import { ThemedText } from '@/components/themed-text';
 import { EmptyState as EditorialEmpty } from '@/components/empty-state';
 import { ThemedView } from '@/components/themed-view';
@@ -19,6 +20,7 @@ import {
   useSetoresTawa,
   useTarefasTawa,
 } from '@/modules/tawa/queries';
+import { useContatos } from '@/modules/tawa/crm/queries';
 import type { StatusTarefa } from '@/modules/tawa/types';
 
 export default function TawaScreen() {
@@ -32,6 +34,8 @@ export default function TawaScreen() {
 
   // Contagens por status (mantendo filtro de setor)
   const todasQ = useTarefasTawa({ setor_id: setorId ?? undefined });
+  const contatosQ = useContatos();
+  const totalContatos = contatosQ.data?.length ?? 0;
   const counts = useMemo(() => {
     const c: Record<StatusTarefa, number> = { a_fazer: 0, em_andamento: 0, concluido: 0 };
     (todasQ.data ?? []).forEach((t) => {
@@ -63,16 +67,28 @@ export default function TawaScreen() {
             </ThemedText>
           </View>
           <Pressable
-            onPress={() => router.push('/modules/tawa/contatos')}
-            hitSlop={10}
-            style={({ pressed }) => [styles.agendaBtn, pressed && { opacity: 0.6 }]}>
-            <Users size={20} color={'rgba(245,241,237,0.65)' as any} />
-          </Pressable>
-          <Pressable
             onPress={() => router.push('/agenda?modulo=tawa')}
             hitSlop={10}
             style={({ pressed }) => [styles.agendaBtn, pressed && { opacity: 0.6 }]}>
             <CalendarDays size={20} color={'rgba(245,241,237,0.65)' as any} />
+          </Pressable>
+        </View>
+
+        {/* Sub-navegação: Tarefas | Contatos (CRM) */}
+        <View style={styles.subnav}>
+          <View style={[styles.subnavItem, styles.subnavAtivo]}>
+            <ThemedText type="default" style={styles.subnavTextoAtivo}>Tarefas</ThemedText>
+          </View>
+          <Pressable
+            onPress={() => router.push('/modules/tawa/contatos')}
+            style={({ pressed }) => [styles.subnavItem, pressed && { opacity: 0.6 }]}>
+            <Users size={16} color={'rgba(245,241,237,0.65)' as any} />
+            <ThemedText type="default" style={styles.subnavTexto}>Contatos</ThemedText>
+            {totalContatos > 0 && (
+              <View style={styles.subnavBadge}>
+                <ThemedText type="mono" style={styles.subnavBadgeTexto}>{totalContatos}</ThemedText>
+              </View>
+            )}
           </Pressable>
         </View>
 
@@ -126,11 +142,9 @@ export default function TawaScreen() {
         />
 
         {/* FAB criar tarefa */}
-        <Pressable
-          onPress={() => router.push('/tarefa/nova')}
-          style={({ pressed }) => [styles.fab, pressed && { opacity: 0.85 }]}>
+        <Fab onPress={() => router.push('/tarefa/nova')} style={{ bottom: 100 }}>
           <Plus color={'#1C1917' as any} size={28} />
-        </Pressable>
+        </Fab>
       </SafeAreaView>
     </ThemedView>
   );
@@ -192,23 +206,41 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(245,241,237,0.06)',
   },
+  subnav: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    paddingBottom: Spacing.two,
+  },
+  subnavItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 7,
+    paddingVertical: 11,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: 'rgba(245,241,237,0.10)',
+    backgroundColor: 'rgba(245,241,237,0.04)',
+  },
+  subnavAtivo: {
+    borderColor: Modules.tawa.accent + '66',
+    backgroundColor: Modules.tawa.accent + '1A',
+  },
+  subnavTexto: { fontSize: 14, color: 'rgba(245,241,237,0.70)' },
+  subnavTextoAtivo: { fontSize: 14, color: Modules.tawa.accent, fontWeight: '600' },
+  subnavBadge: {
+    minWidth: 20,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 10,
+    backgroundColor: 'rgba(245,241,237,0.10)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subnavBadgeTexto: { fontSize: 11, color: 'rgba(245,241,237,0.65)' },
   controls: { gap: Spacing.one, paddingBottom: Spacing.one },
   list: { padding: Spacing.three, paddingBottom: 140 },
   empty: { paddingTop: Spacing.four, alignItems: 'center' },
-  fab: {
-    position: 'absolute',
-    right: Spacing.three,
-    bottom: 100,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Warm.peach,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: Warm.peach,
-    shadowOpacity: 0.45,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
-  },
 });
