@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { CalendarDays, Plus, Users } from 'lucide-react-native';
+import { CalendarDays, FileText, Plus, Users } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 
@@ -74,7 +74,7 @@ export default function TawaScreen() {
           </Pressable>
         </View>
 
-        {/* Sub-navegação: Tarefas | Contatos (CRM) */}
+        {/* Sub-navegação: Tarefas | Contatos | Atas */}
         <View style={styles.subnav}>
           <View style={[styles.subnavItem, styles.subnavAtivo]}>
             <ThemedText type="default" style={styles.subnavTextoAtivo}>Tarefas</ThemedText>
@@ -89,6 +89,12 @@ export default function TawaScreen() {
                 <ThemedText type="mono" style={styles.subnavBadgeTexto}>{totalContatos}</ThemedText>
               </View>
             )}
+          </Pressable>
+          <Pressable
+            onPress={() => router.push('/modules/tawa/atas')}
+            style={({ pressed }) => [styles.subnavItem, pressed && { opacity: 0.6 }]}>
+            <FileText size={16} color={'rgba(245,241,237,0.65)' as any} />
+            <ThemedText type="default" style={styles.subnavTexto}>Atas</ThemedText>
           </Pressable>
         </View>
 

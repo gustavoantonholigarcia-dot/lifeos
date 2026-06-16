@@ -25,6 +25,7 @@ import {
   STATUS_SEQUENCE,
   TIPOS,
   TIPO_LABELS,
+  corReceptividade,
   type ContatoStatus,
   type ContatoTipo,
 } from '@/modules/tawa/crm/types';
@@ -278,7 +279,16 @@ export default function ContatosScreen() {
                       </ThemedText>
                     </View>
                     <View style={{ flex: 1, gap: 2 }}>
-                      <ThemedText type="default">{c.nome}</ThemedText>
+                      <View style={styles.nomeRow}>
+                        {c.receptividade != null && (
+                          <View
+                            style={[styles.recDot, { backgroundColor: corReceptividade(c.receptividade) }]}
+                          />
+                        )}
+                        <ThemedText type="default" numberOfLines={1} style={{ flexShrink: 1 }}>
+                          {c.nome}
+                        </ThemedText>
+                      </View>
                       <ThemedText type="mono" style={styles.sub}>
                         {TIPO_LABELS[c.tipo]}
                         {local ? ` · ${local}` : ''}
@@ -422,6 +432,8 @@ const styles = StyleSheet.create({
   safe: { flex: 1 },
   header: { paddingHorizontal: Spacing.three, paddingTop: Spacing.two, gap: 2 },
   controls: { paddingHorizontal: Spacing.three, paddingTop: Spacing.two, gap: Spacing.two },
+  nomeRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  recDot: { width: 7, height: 7, borderRadius: 3.5 },
   atasRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, paddingHorizontal: Spacing.three, paddingTop: Spacing.two },
   ataChip: {
     paddingHorizontal: 12,

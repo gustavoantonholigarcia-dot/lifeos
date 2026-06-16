@@ -9,6 +9,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Modules, Radius, Spacing, type ModuleKey } from '@/constants/theme';
 import { CompromissosSection } from '@/shared/compromissos/CompromissosSection';
+import { FollowUpSection } from '@/shared/follow-up/FollowUpSection';
 import { VenceHojeSection } from '@/shared/vence-hoje/VenceHojeSection';
 import { QuickCaptureSheet } from '@/shared/quick-capture/QuickCaptureSheet';
 import { ResumoCards, ResumoLocalCard } from '@/shared/resumo/ResumoCard';
@@ -71,6 +72,9 @@ export default function HojeScreen() {
 
           {/* Norte → compromissos (máx 3) → constância diária */}
           <CompromissosSection />
+
+          {/* Contatar hoje — follow-ups do CRM vencendo (some quando vazio) */}
+          <FollowUpSection />
 
           {/* Vence hoje — automático, sem curadoria manual */}
           <VenceHojeSection />

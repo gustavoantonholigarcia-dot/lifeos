@@ -322,6 +322,121 @@ export function useSetEmpenhoStatus() {
   });
 }
 
+// ============================================================================
+// Gestão de atas: criar/editar/apagar ata, lotes e participantes
+// ============================================================================
+export function useCriarAta() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { nome: string; descricao?: string }): Promise<Ata> => {
+      const supabase = requireSupabase();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Não autenticado');
+      const { data, error } = await supabase
+        .from('tawa_atas')
+        .insert({ nome: input.nome, descricao: input.descricao ?? null, user_id: user.id })
+        .select()
+        .single();
+      if (error) throw error;
+      return data as Ata;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: crmKeys.atasLista() }),
+  });
+}
+
+export function useAtualizarAta() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: Partial<Ata> }) => {
+      const supabase = requireSupabase();
+      const { error } = await supabase.from('tawa_atas').update(patch).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => {
+      qc.invalidateQueries({ queryKey: crmKeys.atasLista() });
+      qc.invalidateQueries({ queryKey: crmKeys.ataPainel(v.id) });
+    },
+  });
+}
+
+export function useDeletarAta() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const supabase = requireSupabase();
+      // cascade leva lotes, participantes e empenhos junto
+      const { error } = await supabase.from('tawa_atas').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: crmKeys.atasLista() });
+      qc.invalidateQueries({ queryKey: crmKeys.ataPaineis() });
+    },
+  });
+}
+
+export function useCriarLote(ataId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { veiculo: string; numero?: string; edital_ref?: string; ordem?: number }) => {
+      const supabase = requireSupabase();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Não autenticado');
+      const { error } = await supabase.from('tawa_ata_lotes').insert({
+        ata_id: ataId,
+        user_id: user.id,
+        veiculo: input.veiculo,
+        numero: input.numero ?? null,
+        edital_ref: input.edital_ref ?? null,
+        ordem: input.ordem ?? 0,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: crmKeys.ataPainel(ataId) }),
+  });
+}
+
+export function useDeletarLote(ataId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (loteId: string) => {
+      const supabase = requireSupabase();
+      const { error } = await supabase.from('tawa_ata_lotes').delete().eq('id', loteId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: crmKeys.ataPainel(ataId) }),
+  });
+}
+
+/** Vincula ou desvincula um contato (cidade) como participante da ata. */
+export function useSetParticipante(ataId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { contato_id: string; participa: boolean }) => {
+      const supabase = requireSupabase();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Não autenticado');
+      if (input.participa) {
+        const { error } = await supabase
+          .from('tawa_ata_participantes')
+          .upsert(
+            { ata_id: ataId, contato_id: input.contato_id, user_id: user.id },
+            { onConflict: 'ata_id,contato_id' },
+          );
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('tawa_ata_participantes')
+          .delete()
+          .eq('ata_id', ataId)
+          .eq('contato_id', input.contato_id);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: crmKeys.ataPainel(ataId) }),
+  });
+}
+
 /** Todas as atas do usuário (pra navegação aos painéis). */
 export function useAtas() {
   return useQuery({
