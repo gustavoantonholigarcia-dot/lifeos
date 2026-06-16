@@ -15,6 +15,8 @@ import type {
   Empenho,
   EmpenhoStatus,
   Interacao,
+  LoteCard,
+  LotePainel,
   ParticipanteDaAta,
 } from './types';
 
@@ -31,6 +33,9 @@ export const crmKeys = {
   ataPaineis: () => [...crmKeys.all, 'ata-painel'] as const,
   ataPainel: (ataId: string) => [...crmKeys.ataPaineis(), ataId] as const,
   atasLista: () => [...crmKeys.all, 'atas-lista'] as const,
+  lotesCards: () => [...crmKeys.all, 'lotes-cards'] as const,
+  lotePaineis: () => [...crmKeys.all, 'lote-painel'] as const,
+  lotePainel: (loteId: string) => [...crmKeys.lotePaineis(), loteId] as const,
   tarefas: (contatoId: string) =>
     [...crmKeys.all, 'tarefas', contatoId] as const,
 };
@@ -318,6 +323,8 @@ export function useSetEmpenhoStatus() {
     onSuccess: (e) => {
       qc.invalidateQueries({ queryKey: crmKeys.atas(e.contato_id) });
       qc.invalidateQueries({ queryKey: crmKeys.ataPaineis() });
+      qc.invalidateQueries({ queryKey: crmKeys.lotePainel(e.lote_id) });
+      qc.invalidateQueries({ queryKey: crmKeys.lotesCards() });
     },
   });
 }
@@ -328,13 +335,24 @@ export function useSetEmpenhoStatus() {
 export function useCriarAta() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (input: { nome: string; descricao?: string }): Promise<Ata> => {
+    mutationFn: async (input: {
+      nome: string;
+      descricao?: string;
+      vigencia_em?: string | null;
+      edital_ref?: string | null;
+    }): Promise<Ata> => {
       const supabase = requireSupabase();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Não autenticado');
       const { data, error } = await supabase
         .from('tawa_atas')
-        .insert({ nome: input.nome, descricao: input.descricao ?? null, user_id: user.id })
+        .insert({
+          nome: input.nome,
+          descricao: input.descricao ?? null,
+          vigencia_em: input.vigencia_em ?? null,
+          edital_ref: input.edital_ref ?? null,
+          user_id: user.id,
+        })
         .select()
         .single();
       if (error) throw error;
@@ -355,6 +373,8 @@ export function useAtualizarAta() {
     onSuccess: (_d, v) => {
       qc.invalidateQueries({ queryKey: crmKeys.atasLista() });
       qc.invalidateQueries({ queryKey: crmKeys.ataPainel(v.id) });
+      qc.invalidateQueries({ queryKey: crmKeys.lotePaineis() });
+      qc.invalidateQueries({ queryKey: crmKeys.lotesCards() });
     },
   });
 }
@@ -392,7 +412,55 @@ export function useCriarLote(ataId: string) {
       });
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: crmKeys.ataPainel(ataId) }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: crmKeys.ataPainel(ataId) });
+      qc.invalidateQueries({ queryKey: crmKeys.lotesCards() });
+    },
+  });
+}
+
+/** Cria lote em qualquer consórcio (ataId no mutate) — pra criar da lista. */
+export function useCriarLoteFlex() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { ataId: string; veiculo: string; numero?: string; ordem?: number }) => {
+      const supabase = requireSupabase();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Não autenticado');
+      const { data, error } = await supabase
+        .from('tawa_ata_lotes')
+        .insert({
+          ata_id: input.ataId,
+          user_id: user.id,
+          veiculo: input.veiculo,
+          numero: input.numero ?? null,
+          ordem: input.ordem ?? 0,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data as AtaLote;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: crmKeys.lotesCards() });
+      qc.invalidateQueries({ queryKey: crmKeys.ataPaineis() });
+    },
+  });
+}
+
+export function useAtualizarLote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: Partial<AtaLote> }) => {
+      const supabase = requireSupabase();
+      const { error } = await supabase.from('tawa_ata_lotes').update(patch).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, v) => {
+      qc.invalidateQueries({ queryKey: crmKeys.lotePainel(v.id) });
+      qc.invalidateQueries({ queryKey: crmKeys.lotesCards() });
+      qc.invalidateQueries({ queryKey: crmKeys.ataPaineis() });
+    },
   });
 }
 
@@ -404,7 +472,99 @@ export function useDeletarLote(ataId: string) {
       const { error } = await supabase.from('tawa_ata_lotes').delete().eq('id', loteId);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: crmKeys.ataPainel(ataId) }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: crmKeys.ataPainel(ataId) });
+      qc.invalidateQueries({ queryKey: crmKeys.lotesCards() });
+    },
+  });
+}
+
+/** Cards de lote: cada veículo de cada consórcio, com progresso de empenhos. */
+export function useLotesCards() {
+  return useQuery({
+    queryKey: crmKeys.lotesCards(),
+    queryFn: async (): Promise<LoteCard[]> => {
+      const supabase = requireSupabase();
+      const [lotesR, atasR, partsR, empsR] = await Promise.all([
+        supabase.from('tawa_ata_lotes').select('*').order('ordem', { ascending: true }),
+        supabase.from('tawa_atas').select('id, nome'),
+        supabase.from('tawa_ata_participantes').select('ata_id'),
+        supabase.from('tawa_empenhos').select('lote_id, status'),
+      ]);
+      if (lotesR.error) throw lotesR.error;
+      if (atasR.error) throw atasR.error;
+      if (partsR.error) throw partsR.error;
+      if (empsR.error) throw empsR.error;
+
+      const nomePorAta = new Map<string, string>();
+      (atasR.data ?? []).forEach((a: any) => nomePorAta.set(a.id, a.nome));
+      const cidadesPorAta = new Map<string, number>();
+      (partsR.data ?? []).forEach((p: any) =>
+        cidadesPorAta.set(p.ata_id, (cidadesPorAta.get(p.ata_id) ?? 0) + 1),
+      );
+      const empenhadosPorLote = new Map<string, number>();
+      (empsR.data ?? []).forEach((e: any) => {
+        if (e.status === 'empenhado')
+          empenhadosPorLote.set(e.lote_id, (empenhadosPorLote.get(e.lote_id) ?? 0) + 1);
+      });
+
+      return ((lotesR.data ?? []) as AtaLote[]).map((lote) => ({
+        lote,
+        ataNome: nomePorAta.get(lote.ata_id) ?? '—',
+        totalCidades: cidadesPorAta.get(lote.ata_id) ?? 0,
+        empenhados: empenhadosPorLote.get(lote.id) ?? 0,
+      }));
+    },
+  });
+}
+
+/** Painel de um lote: as cidades do consórcio × o status deste lote. */
+export function useLotePainel(loteId: string | null | undefined) {
+  return useQuery({
+    queryKey: crmKeys.lotePainel(loteId ?? 'none'),
+    enabled: !!loteId,
+    queryFn: async (): Promise<LotePainel | null> => {
+      if (!loteId) return null;
+      const supabase = requireSupabase();
+
+      const { data: lote, error: eLote } = await supabase
+        .from('tawa_ata_lotes')
+        .select('*')
+        .eq('id', loteId)
+        .maybeSingle();
+      if (eLote) throw eLote;
+      if (!lote) return null;
+
+      const [ataR, partsR, empsR] = await Promise.all([
+        supabase.from('tawa_atas').select('nome, vigencia_em, edital_ref').eq('id', (lote as AtaLote).ata_id).maybeSingle(),
+        supabase
+          .from('tawa_ata_participantes')
+          .select('contato_id, tawa_contatos(id, nome, receptividade, status, telefone)')
+          .eq('ata_id', (lote as AtaLote).ata_id),
+        supabase.from('tawa_empenhos').select('*').eq('lote_id', loteId),
+      ]);
+      if (ataR.error) throw ataR.error;
+      if (partsR.error) throw partsR.error;
+      if (empsR.error) throw empsR.error;
+
+      const empPorContato = new Map<string, Empenho>();
+      ((empsR.data ?? []) as Empenho[]).forEach((e) => empPorContato.set(e.contato_id, e));
+
+      const participantes = ((partsR.data ?? []) as any[])
+        .filter((p) => p.tawa_contatos)
+        .map((p) => ({
+          contato: p.tawa_contatos,
+          empenho: empPorContato.get(p.contato_id) ?? null,
+        }));
+
+      return {
+        lote: lote as AtaLote,
+        ataNome: (ataR.data as any)?.nome ?? '—',
+        ataVigencia: (ataR.data as any)?.vigencia_em ?? null,
+        ataEdital: (ataR.data as any)?.edital_ref ?? null,
+        participantes,
+      };
+    },
   });
 }
 
@@ -433,7 +593,11 @@ export function useSetParticipante(ataId: string) {
         if (error) throw error;
       }
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: crmKeys.ataPainel(ataId) }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: crmKeys.ataPainel(ataId) });
+      qc.invalidateQueries({ queryKey: crmKeys.lotePaineis() });
+      qc.invalidateQueries({ queryKey: crmKeys.lotesCards() });
+    },
   });
 }
 

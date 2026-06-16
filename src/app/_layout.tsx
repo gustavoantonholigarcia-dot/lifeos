@@ -130,6 +130,14 @@ export default function RootLayout() {
               name="modules/intercambio/index"
               options={{ ...pushHeader, title: 'Intercâmbio' }}
             />
+
+            {/* TAWA — atas de registro */}
+            <Stack.Screen
+              name="modules/tawa/atas/index"
+              options={{ ...pushHeader, title: 'Atas de registro' }}
+            />
+            <Stack.Screen name="modules/tawa/atas/[id]" options={pushHeader} />
+            <Stack.Screen name="modules/tawa/atas/lote/[id]" options={pushHeader} />
           </Stack>
         </ThemeProvider>
       </QueryClientProvider>

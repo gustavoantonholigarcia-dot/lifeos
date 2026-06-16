@@ -97,6 +97,8 @@ export interface Ata {
   user_id: string;
   nome: string;
   descricao: string | null;
+  vigencia_em: string | null; // date — limite pra empenhar
+  edital_ref: string | null;
   created_at: string;
 }
 
@@ -149,6 +151,28 @@ export interface AtaPainel {
   ata: Ata;
   lotes: AtaLote[];
   participantes: ParticipanteDaAta[];
+}
+
+/** Card de lote na lista (cada veículo de um consórcio, independente). */
+export interface LoteCard {
+  lote: AtaLote;
+  ataNome: string;
+  totalCidades: number;
+  empenhados: number;
+}
+
+/** Painel de um único lote: as cidades do consórcio × o status deste lote. */
+export interface LoteParticipante {
+  contato: Pick<Contato, 'id' | 'nome' | 'receptividade' | 'status' | 'telefone'>;
+  empenho: Empenho | null;
+}
+
+export interface LotePainel {
+  lote: AtaLote;
+  ataNome: string;
+  ataVigencia: string | null;
+  ataEdital: string | null;
+  participantes: LoteParticipante[];
 }
 
 export const EMPENHO_STATUS_LABELS: Record<EmpenhoStatus, string> = {
