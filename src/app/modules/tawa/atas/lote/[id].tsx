@@ -18,6 +18,7 @@ import {
   useSetParticipante,
 } from '@/modules/tawa/crm/queries';
 import { parsearDataBR } from '@/shared/format/date';
+import { formatarReais, formatarReaisCompacto, parsearReais } from '@/modules/tawa/crm/helpers';
 import {
   EMPENHO_STATUS_CORES,
   EMPENHO_STATUS_LABELS,
@@ -106,6 +107,17 @@ export default function LotePainelScreen() {
               {lote.numero ? `${lote.numero.toUpperCase()} · ` : ''}{ataNome.toUpperCase()}
             </ThemedText>
             <ThemedText type="titleMD">{lote.veiculo}</ThemedText>
+            {lote.valor_unitario || lote.quantidade ? (
+              <ThemedText type="mono" style={styles.valorLinha}>
+                {[
+                  lote.quantidade ? `${lote.quantidade} veículos` : null,
+                  lote.valor_unitario ? `${formatarReaisCompacto(lote.valor_unitario)}/un` : null,
+                  lote.valor_unitario && lote.quantidade
+                    ? `total ${formatarReaisCompacto(lote.valor_unitario * lote.quantidade)}`
+                    : null,
+                ].filter(Boolean).join(' · ')}
+              </ThemedText>
+            ) : null}
             {(() => {
               const vig = vigenciaInfo(painel.ataVigencia);
               const partes: string[] = [];
@@ -223,6 +235,10 @@ function GerenciarLote({ painel, onClose }: { painel: LotePainel; onClose: () =>
 
   const [veiculo, setVeiculo] = useState(painel.lote.veiculo);
   const [numero, setNumero] = useState(painel.lote.numero ?? '');
+  const [valor, setValor] = useState(
+    painel.lote.valor_unitario != null ? formatarReais(painel.lote.valor_unitario) : '',
+  );
+  const [qtd, setQtd] = useState(painel.lote.quantidade != null ? String(painel.lote.quantidade) : '');
   const [edital, setEdital] = useState(painel.ataEdital ?? '');
   const [vigencia, setVigencia] = useState(() => {
     const v = vigenciaInfo(painel.ataVigencia);
@@ -243,7 +259,12 @@ function GerenciarLote({ painel, onClose }: { painel: LotePainel; onClose: () =>
     if (!veiculo.trim()) return;
     atualizar.mutate({
       id: painel.lote.id,
-      patch: { veiculo: veiculo.trim(), numero: numero.trim() || null },
+      patch: {
+        veiculo: veiculo.trim(),
+        numero: numero.trim() || null,
+        valor_unitario: parsearReais(valor),
+        quantidade: qtd.trim() ? parseInt(qtd.replace(/\D/g, ''), 10) || null : null,
+      },
     });
     Haptics.selectionAsync();
   }
@@ -305,6 +326,26 @@ function GerenciarLote({ painel, onClose }: { painel: LotePainel; onClose: () =>
               onBlur={salvarLote}
               placeholder="Veículo"
               placeholderTextColor="rgba(245,241,237,0.25)"
+              style={[styles.input, { flex: 1 }]}
+            />
+          </View>
+          <View style={styles.loteRow}>
+            <TextInput
+              value={valor}
+              onChangeText={setValor}
+              onBlur={salvarLote}
+              placeholder="Valor/veículo (R$)"
+              placeholderTextColor="rgba(245,241,237,0.25)"
+              keyboardType="numbers-and-punctuation"
+              style={[styles.input, { flex: 1 }]}
+            />
+            <TextInput
+              value={qtd}
+              onChangeText={setQtd}
+              onBlur={salvarLote}
+              placeholder="Qtd veículos"
+              placeholderTextColor="rgba(245,241,237,0.25)"
+              keyboardType="number-pad"
               style={[styles.input, { flex: 1 }]}
             />
           </View>
@@ -387,6 +428,7 @@ const styles = StyleSheet.create({
   barraFill: { height: '100%', borderRadius: 3 },
   contagem: { fontSize: 12, color: 'rgba(245,241,237,0.55)' },
   vig: { fontSize: 12, color: 'rgba(245,241,237,0.55)' },
+  valorLinha: { fontSize: 12, color: ACCENT },
   dica: { paddingHorizontal: 2, opacity: 0.7 },
 
   grade: { borderRadius: Radius.lg, paddingHorizontal: Spacing.three, paddingVertical: Spacing.one },

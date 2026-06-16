@@ -110,6 +110,7 @@ export interface AtaLote {
   veiculo: string;
   edital_ref: string | null;
   valor_unitario: number | null;
+  quantidade: number | null;
   ordem: number;
   created_at: string;
 }

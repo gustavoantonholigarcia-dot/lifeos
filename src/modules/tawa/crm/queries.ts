@@ -423,7 +423,14 @@ export function useCriarLote(ataId: string) {
 export function useCriarLoteFlex() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (input: { ataId: string; veiculo: string; numero?: string; ordem?: number }) => {
+    mutationFn: async (input: {
+      ataId: string;
+      veiculo: string;
+      numero?: string;
+      valor_unitario?: number | null;
+      quantidade?: number | null;
+      ordem?: number;
+    }) => {
       const supabase = requireSupabase();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Não autenticado');
@@ -434,6 +441,8 @@ export function useCriarLoteFlex() {
           user_id: user.id,
           veiculo: input.veiculo,
           numero: input.numero ?? null,
+          valor_unitario: input.valor_unitario ?? null,
+          quantidade: input.quantidade ?? null,
           ordem: input.ordem ?? 0,
         })
         .select()

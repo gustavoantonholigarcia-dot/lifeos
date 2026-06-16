@@ -16,6 +16,7 @@ import {
   useLotesCards,
 } from '@/modules/tawa/crm/queries';
 import { parsearDataBR } from '@/shared/format/date';
+import { formatarReaisCompacto, parsearReais } from '@/modules/tawa/crm/helpers';
 import { EMPENHO_STATUS_CORES, type Ata, type LoteCard } from '@/modules/tawa/crm/types';
 
 const ACCENT = Modules.tawa.accent;
@@ -145,9 +146,19 @@ export default function AtasScreen() {
                             ]}
                           />
                         </View>
-                        <ThemedText type="mono" style={styles.cardCont}>
-                          {card.empenhados}/{card.totalCidades} empenhado{card.empenhados === 1 ? '' : 's'}
-                        </ThemedText>
+                        <View style={styles.cardMeta}>
+                          <ThemedText type="mono" style={styles.cardCont}>
+                            {card.empenhados}/{card.totalCidades} empenhado{card.empenhados === 1 ? '' : 's'}
+                          </ThemedText>
+                          {card.lote.valor_unitario || card.lote.quantidade ? (
+                            <ThemedText type="mono" style={styles.cardValor}>
+                              {[
+                                card.lote.quantidade ? `${card.lote.quantidade} un` : null,
+                                card.lote.valor_unitario ? `${formatarReaisCompacto(card.lote.valor_unitario)}/un` : null,
+                              ].filter(Boolean).join(' · ')}
+                            </ThemedText>
+                          ) : null}
+                        </View>
                       </View>
                       <ChevronRight size={16} color={'rgba(245,241,237,0.30)' as any} />
                     </ThemedView>
@@ -187,6 +198,8 @@ function NovoLoteSheet({ atas, onClose }: { atas: Ata[]; onClose: () => void }) 
   const [vigencia, setVigencia] = useState('');
   const [numero, setNumero] = useState('');
   const [veiculo, setVeiculo] = useState('');
+  const [valor, setValor] = useState('');
+  const [qtd, setQtd] = useState('');
   const [salvando, setSalvando] = useState(false);
 
   const usandoNovo = ataId === null;
@@ -213,6 +226,8 @@ function NovoLoteSheet({ atas, onClose }: { atas: Ata[]; onClose: () => void }) 
         ataId: alvo!,
         veiculo: veiculo.trim(),
         numero: numero.trim() || undefined,
+        valor_unitario: parsearReais(valor),
+        quantidade: qtd.trim() ? parseInt(qtd.replace(/\D/g, ''), 10) || null : null,
       });
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       onClose();
@@ -319,6 +334,29 @@ function NovoLoteSheet({ atas, onClose }: { atas: Ata[]; onClose: () => void }) 
               style={[styles.input, { flex: 1 }]}
             />
           </View>
+          <View style={styles.loteRow}>
+            <TextInput
+              value={valor}
+              onChangeText={setValor}
+              placeholder="Valor/veículo (R$)"
+              placeholderTextColor="rgba(245,241,237,0.25)"
+              keyboardType="numbers-and-punctuation"
+              style={[styles.input, { flex: 1 }]}
+            />
+            <TextInput
+              value={qtd}
+              onChangeText={setQtd}
+              placeholder="Qtd veículos"
+              placeholderTextColor="rgba(245,241,237,0.25)"
+              keyboardType="number-pad"
+              style={[styles.input, { flex: 1 }]}
+            />
+          </View>
+          {parsearReais(valor) && qtd.trim() ? (
+            <ThemedText type="mono" style={styles.totalPreview}>
+              Total potencial: {formatarReaisCompacto((parsearReais(valor) ?? 0) * (parseInt(qtd.replace(/\D/g, ''), 10) || 0))}
+            </ThemedText>
+          ) : null}
 
           <ThemedText type="small" themeColor="textMuted">
             Os municípios são do consórcio (compartilhados entre os lotes). Você marca
@@ -369,7 +407,10 @@ const styles = StyleSheet.create({
   loteNum: { fontSize: 11, color: ACCENT },
   barra: { height: 5, backgroundColor: 'rgba(245,241,237,0.08)', borderRadius: 3, overflow: 'hidden' },
   barraFill: { height: '100%', borderRadius: 3 },
+  cardMeta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
   cardCont: { fontSize: 11, color: 'rgba(245,241,237,0.45)' },
+  cardValor: { fontSize: 11, color: ACCENT },
+  totalPreview: { fontSize: 12, color: ACCENT },
   dica: { opacity: 0.7, textAlign: 'center' },
   fab: {
     position: 'absolute',
